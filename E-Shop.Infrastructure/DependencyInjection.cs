@@ -1,5 +1,7 @@
 ﻿using E_Shop.Domain.Models.Identity;
+using E_Shop.Domain.RepositoryContract;
 using E_Shop.Infrastructure.Data;
+using E_Shop.Infrastructure.Repositories;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
@@ -35,6 +37,10 @@ namespace E_Shop.Infrastructure
             {
                 options.LoginPath = "/Account/Login";
             });
+
+            services.AddScoped<IUnitOfWork, UnitOfWork>();
+            services.AddScoped<IUserContext,UserContext>();
+
             return services;
         }
     }
