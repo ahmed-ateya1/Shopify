@@ -1,0 +1,48 @@
+﻿@model E_Shop.Application.Dtos.AccountDtos.LoginDto
+@{
+    ViewBag.Title = "Login";
+}
+
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-12">
+            <div class="card">
+                <h5 class="card-header">Login</h5>
+                <div class="card-body">
+                    <form asp-action="Login" method="post">
+                        <input type="hidden" name="returnURL" value="@ViewBag.ReturnUrl" />
+                        <div class="form-group">
+                            <label asp-for="Email" class="control-label">Email</label>
+                            <input asp-for="Email" class="form-control" />
+                            <span asp-validation-for="Email" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="Password" class="control-label">Password</label>
+                            <input asp-for="Password" class="form-control" />
+                            <span asp-validation-for="Password" class="text-danger"></span>
+                        </div>
+                        <div class="form-group form-check">
+                            <input class="form-check-input" asp-for="RememberMe" />
+                            <label class="form-check-label">Remember me</label>
+                        </div>
+                        <div class="form-group">
+                            <button type="submit" class="btn btn-primary btn-block" style="background-color:#0d786b">Login</button>
+                        </div>
+                        <div class="form-group">
+                            <a asp-action="Index" asp-controller="Movies" class="btn btn-danger btn-block">Back to List</a>
+                            <div asp-validation-summary="All" class="text-danger"></div>
+
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

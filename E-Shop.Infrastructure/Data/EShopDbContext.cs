@@ -13,6 +13,7 @@ namespace E_Shop.Infrastructure.Data
         public DbSet<OrderItem> OrderItems { get; set; }
         public DbSet<Product> Products { get; set; }
         public DbSet<Category> Categories { get; set; }
+        public DbSet<ProductImage> ProductImages { get; set; }
 
         public EShopDbContext(DbContextOptions<EShopDbContext> options) : base(options)
         {

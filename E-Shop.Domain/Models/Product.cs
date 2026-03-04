@@ -12,5 +12,6 @@
         public Guid CategoryId { get; set; }
         public virtual Category Category { get; set; }
         public virtual ICollection<OrderItem> OrderItems { get; set; } = [];
+        public virtual ICollection<ProductImage> Images { get; set; } = [];
     }
 }
