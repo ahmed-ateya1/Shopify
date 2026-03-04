@@ -1,0 +1,140 @@
+@using E_Shop.Application.Dtos.OrderDtos
+@{
+    ViewData["Title"] = "Dashboard";
+    var productCount = (long)ViewBag.ProductCount;
+    var categoryCount = (long)ViewBag.CategoryCount;
+    var orderCount = (long)ViewBag.OrderCount;
+    var revenue = (decimal)ViewBag.Revenue;
+    var recentOrders = ViewBag.RecentOrders as IEnumerable<OrderResponse>;
+}
+
+<div class="admin-page-header">
+    <h1 class="admin-page-title"><i class="fas fa-tachometer-alt me-2"></i>Dashboard</h1>
+</div>
+
+<!-- Stats Cards -->
+<div class="row g-3 mb-4">
+    <div class="col-md-6 col-lg-3">
+        <div class="stat-card">
+            <div class="stat-icon blue"><i class="fas fa-box"></i></div>
+            <div class="stat-info">
+                <h3>@productCount</h3>
+                <p>Total Products</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6 col-lg-3">
+        <div class="stat-card">
+            <div class="stat-icon orange"><i class="fas fa-tags"></i></div>
+            <div class="stat-info">
+                <h3>@categoryCount</h3>
+                <p>Categories</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6 col-lg-3">
+        <div class="stat-card">
+            <div class="stat-icon green"><i class="fas fa-shopping-bag"></i></div>
+            <div class="stat-info">
+                <h3>@orderCount</h3>
+                <p>Total Orders</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6 col-lg-3">
+        <div class="stat-card">
+            <div class="stat-icon purple"><i class="fas fa-dollar-sign"></i></div>
+            <div class="stat-info">
+                <h3>$@revenue.ToString("N2")</h3>
+                <p>Total Revenue</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Quick Actions -->
+<div class="row g-3 mb-4">
+    <div class="col-md-4">
+        <a asp-area="Admin" asp-controller="Products" asp-action="Create" class="text-decoration-none">
+            <div class="admin-card text-center p-4">
+                <i class="fas fa-plus-circle fa-2x text-primary mb-2"></i>
+                <h6 class="fw-bold">Add Product</h6>
+                <p class="text-muted small mb-0">Create a new product listing</p>
+            </div>
+        </a>
+    </div>
+    <div class="col-md-4">
+        <a asp-area="Admin" asp-controller="Categories" asp-action="Create" class="text-decoration-none">
+            <div class="admin-card text-center p-4">
+                <i class="fas fa-folder-plus fa-2x text-warning mb-2"></i>
+                <h6 class="fw-bold">Add Category</h6>
+                <p class="text-muted small mb-0">Create a new category</p>
+            </div>
+        </a>
+    </div>
+    <div class="col-md-4">
+        <a asp-area="Admin" asp-controller="Orders" asp-action="Index" class="text-decoration-none">
+            <div class="admin-card text-center p-4">
+                <i class="fas fa-clipboard-list fa-2x text-success mb-2"></i>
+                <h6 class="fw-bold">Manage Orders</h6>
+                <p class="text-muted small mb-0">View and update orders</p>
+            </div>
+        </a>
+    </div>
+</div>
+
+<!-- Recent Orders -->
+<div class="admin-card">
+    <div class="admin-card-header">
+        <h6 class="fw-bold mb-0"><i class="fas fa-clock me-2"></i>Recent Orders</h6>
+        <a asp-area="Admin" asp-controller="Orders" asp-action="Index" class="btn btn-sm btn-outline-primary">View All</a>
+    </div>
+    <div class="admin-card-body p-0">
+        <div class="table-responsive">
+            <table class="admin-table">
+                <thead>
+                    <tr>
+                        <th>Order ID</th>
+                        <th>Customer</th>
+                        <th>Date</th>
+                        <th>Amount</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (recentOrders != null && recentOrders.Any())
+                    {
+                        @foreach (var order in recentOrders)
+                        {
+                            <tr>
+                                <td class="fw-semibold">#@order.Id.ToString().Substring(0, 8).ToUpper()</td>
+                                <td>@order.UserName</td>
+                                <td>@order.OrderDate.ToString("MMM dd, yyyy")</td>
+                                <td class="fw-semibold">$@order.TotalAmount.ToString("N2")</td>
+                                <td>
+                                    @{
+                                        var statusClass = order.Status.ToString().ToLower() switch
+                                        {
+                                            "pending" => "pending",
+                                            "prosessing" => "processing",
+                                            "shipped" => "shipped",
+                                            "completed" => "completed",
+                                            _ => "pending"
+                                        };
+                                    }
+                                    <span class="status-badge @statusClass">@order.Status</span>
+                                </td>
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="5" class="text-center text-muted py-4">No orders yet</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

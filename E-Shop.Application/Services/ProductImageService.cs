@@ -4,7 +4,7 @@ namespace E_Shop.Application.Services
 {
     public class ProductImageService(IUnitOfWork unitOfWork,
         IFileServices fileServices,
-        Logger<ProductImageService> logger)
+        ILogger<ProductImageService> logger)
         : IProductImageService
     {
         private async Task ExecuteWithTransactionAsync(Func<Task> action)
@@ -30,10 +30,7 @@ namespace E_Shop.Application.Services
             if (productImages == null || !productImages.Any())
                 return false;
 
-            await ExecuteWithTransactionAsync(async () =>
-            {
-                await unitOfWork.Repository<ProductImage>().RemoveRangeAsync(productImages);
-            });
+            await unitOfWork.Repository<ProductImage>().RemoveRangeAsync(productImages);
 
             return true;
 
@@ -41,28 +38,26 @@ namespace E_Shop.Application.Services
 
         public async Task SaveImagesAsync(ProductImageAddRequest request)
         {
-           
-            if (request == null) throw new ArgumentNullException(nameof(request));
-
+            if (request == null)
+                throw new ArgumentNullException(nameof(request));
 
             var productImages = new List<ProductImage>();
+
             foreach (var image in request.Images)
             {
-                var fileName =  await fileServices.CreateFile(image);
+                var fileName = await fileServices.CreateFile(image);
+
                 var productImage = new ProductImage
                 {
                     Id = Guid.NewGuid(),
                     ImageUrl = fileName,
                     ProductId = request.ProductId
                 };
+
                 productImages.Add(productImage);
             }
 
-            await ExecuteWithTransactionAsync(async () =>
-            {
-                await unitOfWork.Repository<ProductImage>().AddRangeAsync(productImages);
-            });
-
+            await unitOfWork.Repository<ProductImage>().AddRangeAsync(productImages);
         }
     }
 }

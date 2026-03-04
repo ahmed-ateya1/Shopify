@@ -85,7 +85,9 @@ namespace E_Shop.Application.Services
                 .GetAllAsync(predicate,
                 includeProperties: "ParentCategory,SubCategories,Products",
                 sortBy: pagination.SortBy,
-                sortDirection: pagination.SortDirection);
+                sortDirection: pagination.SortDirection,
+                pageSize: pagination.PageSize,
+                pageIndex: pagination.PageIndex);
 
             if(categories == null || !categories.Any())
             {

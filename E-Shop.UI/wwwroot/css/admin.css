@@ -1,0 +1,441 @@
+/* ===== Admin Panel Styles ===== */
+
+.admin-body {
+    background: #f0f2f5;
+}
+
+.admin-wrapper {
+    display: flex;
+    min-height: 100vh;
+}
+
+/* ===== Sidebar ===== */
+.admin-sidebar {
+    width: 260px;
+    background: linear-gradient(180deg, #1a1a2e 0%, #16213e 100%);
+    color: #fff;
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    z-index: 1040;
+    transition: all 0.3s ease;
+    overflow-y: auto;
+}
+
+.sidebar-header {
+    padding: 1.25rem 1.5rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.sidebar-brand {
+    color: #fff;
+    text-decoration: none;
+    font-size: 1.3rem;
+    font-weight: 700;
+}
+
+.sidebar-brand i {
+    color: #ff6b35;
+}
+
+.sidebar-brand:hover {
+    color: #fff;
+}
+
+.sidebar-badge {
+    background: #ff6b35;
+    color: #fff;
+    font-size: 0.7rem;
+    padding: 2px 10px;
+    border-radius: 20px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+}
+
+.sidebar-nav {
+    flex: 1;
+    padding: 1rem 0;
+}
+
+.sidebar-menu {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.sidebar-menu-header {
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: rgba(255, 255, 255, 0.35);
+    padding: 1rem 1.5rem 0.5rem;
+    font-weight: 600;
+}
+
+.sidebar-link {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 0.65rem 1.5rem;
+    color: rgba(255, 255, 255, 0.65);
+    text-decoration: none;
+    font-size: 0.9rem;
+    font-weight: 500;
+    transition: all 0.2s ease;
+    border-left: 3px solid transparent;
+}
+
+.sidebar-link:hover {
+    color: #fff;
+    background: rgba(255, 255, 255, 0.06);
+    border-left-color: rgba(255, 107, 53, 0.5);
+}
+
+.sidebar-link.active {
+    color: #fff;
+    background: rgba(255, 107, 53, 0.12);
+    border-left-color: #ff6b35;
+}
+
+.sidebar-link i {
+    width: 20px;
+    text-align: center;
+    font-size: 0.95rem;
+}
+
+.sidebar-footer {
+    padding: 1rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+/* ===== Main Content ===== */
+.admin-main {
+    flex: 1;
+    margin-left: 260px;
+    transition: all 0.3s ease;
+}
+
+/* ===== Topbar ===== */
+.admin-topbar {
+    background: #fff;
+    padding: 0 1.5rem;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+    position: sticky;
+    top: 0;
+    z-index: 1020;
+}
+
+.sidebar-toggle {
+    color: #333;
+    font-size: 1.2rem;
+    padding: 0.25rem 0.5rem;
+}
+
+.topbar-right {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.topbar-user {
+    color: #333;
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 0.9rem;
+}
+
+/* ===== Page Content ===== */
+.admin-content {
+    padding: 1.5rem;
+}
+
+/* ===== Sidebar Collapse ===== */
+.sidebar-collapsed .admin-sidebar {
+    width: 0;
+    overflow: hidden;
+}
+
+.sidebar-collapsed .admin-main {
+    margin-left: 0;
+}
+
+/* ===== Admin Cards ===== */
+.admin-page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.admin-page-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #1a1a2e;
+    margin: 0;
+}
+
+.admin-card {
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    border: 1px solid #e9ecef;
+}
+
+.admin-card-header {
+    padding: 1rem 1.5rem;
+    border-bottom: 1px solid #e9ecef;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.admin-card-body {
+    padding: 1.5rem;
+}
+
+/* ===== Admin Table ===== */
+.admin-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.admin-table thead th {
+    background: #f8f9fa;
+    padding: 0.75rem 1rem;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: #6c757d;
+    font-weight: 600;
+    border-bottom: 2px solid #e9ecef;
+    white-space: nowrap;
+}
+
+.admin-table tbody td {
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid #f1f3f5;
+    vertical-align: middle;
+    font-size: 0.9rem;
+}
+
+.admin-table tbody tr:hover {
+    background: #f8f9fa;
+}
+
+.admin-table .thumb-img {
+    width: 45px;
+    height: 45px;
+    border-radius: 8px;
+    object-fit: cover;
+    border: 1px solid #e9ecef;
+}
+
+.admin-table .thumb-placeholder {
+    width: 45px;
+    height: 45px;
+    border-radius: 8px;
+    background: #f1f3f5;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: #adb5bd;
+}
+
+/* ===== Action Buttons ===== */
+.btn-action {
+    width: 32px;
+    height: 32px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    border: 1px solid #e9ecef;
+    background: #fff;
+    color: #495057;
+    font-size: 0.85rem;
+    transition: all 0.2s;
+    padding: 0;
+}
+
+.btn-action:hover {
+    background: #f8f9fa;
+}
+
+.btn-action.edit:hover {
+    color: #1a73e8;
+    border-color: #1a73e8;
+}
+
+.btn-action.delete:hover {
+    color: #dc3545;
+    border-color: #dc3545;
+}
+
+.btn-action.view:hover {
+    color: #28a745;
+    border-color: #28a745;
+}
+
+/* ===== Admin Forms ===== */
+.admin-form .form-label {
+    font-weight: 600;
+    font-size: 0.85rem;
+    color: #495057;
+    margin-bottom: 0.35rem;
+}
+
+.admin-form .form-control,
+.admin-form .form-select {
+    border: 2px solid #e9ecef;
+    border-radius: 8px;
+    padding: 0.6rem 1rem;
+    transition: all 0.2s;
+}
+
+.admin-form .form-control:focus,
+.admin-form .form-select:focus {
+    border-color: #1a73e8;
+    box-shadow: 0 0 0 3px rgba(26, 115, 232, 0.1);
+}
+
+/* ===== Status Badges ===== */
+.status-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.78rem;
+    font-weight: 600;
+}
+
+.status-badge.pending {
+    background: #fff3cd;
+    color: #856404;
+}
+
+.status-badge.processing {
+    background: #cce5ff;
+    color: #004085;
+}
+
+.status-badge.shipped {
+    background: #d4edda;
+    color: #155724;
+}
+
+.status-badge.completed {
+    background: #d1ecf1;
+    color: #0c5460;
+}
+
+/* ===== Stats Cards ===== */
+.stat-card {
+    background: #fff;
+    border-radius: 12px;
+    padding: 1.25rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    border: 1px solid #e9ecef;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.stat-icon {
+    width: 52px;
+    height: 52px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.3rem;
+}
+
+.stat-icon.blue {
+    background: #e8f0fe;
+    color: #1a73e8;
+}
+
+.stat-icon.orange {
+    background: #fff3e0;
+    color: #ff6b35;
+}
+
+.stat-icon.green {
+    background: #e8f5e9;
+    color: #2ecc71;
+}
+
+.stat-icon.purple {
+    background: #f3e5f5;
+    color: #9c27b0;
+}
+
+.stat-info h3 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin: 0;
+    color: #1a1a2e;
+}
+
+.stat-info p {
+    margin: 0;
+    color: #6c757d;
+    font-size: 0.85rem;
+}
+
+/* ===== Image Upload ===== */
+.image-upload-area {
+    border: 2px dashed #dee2e6;
+    border-radius: 12px;
+    padding: 2rem;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s;
+    background: #f8f9fa;
+}
+
+.image-upload-area:hover {
+    border-color: #1a73e8;
+    background: #e8f0fe;
+}
+
+.image-upload-area i {
+    font-size: 2rem;
+    color: #adb5bd;
+    margin-bottom: 0.5rem;
+}
+
+.image-upload-area p {
+    margin: 0;
+    color: #6c757d;
+    font-size: 0.9rem;
+}
+
+/* ===== Responsive ===== */
+@media (max-width: 991px) {
+    .admin-sidebar {
+        transform: translateX(-100%);
+    }
+
+    .admin-main {
+        margin-left: 0;
+    }
+
+    .sidebar-collapsed .admin-sidebar {
+        transform: translateX(0);
+        width: 260px;
+    }
+}

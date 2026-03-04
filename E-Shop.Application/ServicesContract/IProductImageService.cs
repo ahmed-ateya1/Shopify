@@ -4,7 +4,7 @@ namespace E_Shop.Application.ServicesContract
 {
     public interface IProductImageService
     {
-        Task<ProductImageResponse> SaveImagesAsync(ProductImageAddRequest request);
+        Task SaveImagesAsync(ProductImageAddRequest request);
          Task<bool> DeleteImageAsync(Guid ProductId);
     }
 }

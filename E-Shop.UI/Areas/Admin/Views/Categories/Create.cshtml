@@ -1,0 +1,61 @@
+@using E_Shop.Application.Dtos
+@model CategoryAddRequest
+@{
+    ViewData["Title"] = "Add Category";
+    var parentCategories = ViewBag.ParentCategories as IEnumerable<CategoryResponse>;
+}
+
+<div class="admin-page-header">
+    <h1 class="admin-page-title"><i class="fas fa-folder-plus me-2"></i>Add Category</h1>
+    <a asp-action="Index" class="btn btn-outline-secondary">
+        <i class="fas fa-arrow-left me-1"></i> Back to List
+    </a>
+</div>
+
+<div class="row">
+    <div class="col-lg-8">
+        <div class="admin-card">
+            <div class="admin-card-body">
+                <form asp-action="Create" method="post" enctype="multipart/form-data" class="admin-form">
+                    <div asp-validation-summary="All" class="alert alert-danger" style="display:@(ViewData.ModelState.ErrorCount > 0 ? "block" : "none")"></div>
+
+                    <div class="mb-3">
+                        <label asp-for="Name" class="form-label">Category Name <span class="text-danger">*</span></label>
+                        <input asp-for="Name" class="form-control" placeholder="Enter category name" />
+                        <span asp-validation-for="Name" class="text-danger small"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="ParentCategoryId" class="form-label">Parent Category</label>
+                        <select asp-for="ParentCategoryId" class="form-select">
+                            <option value="">— None (Top Level) —</option>
+                            @if (parentCategories != null)
+                            {
+                                @foreach (var cat in parentCategories)
+                                {
+                                    <option value="@cat.Id">@cat.Name</option>
+                                }
+                            }
+                        </select>
+                    </div>
+
+                    <div class="mb-4">
+                        <label asp-for="Image" class="form-label">Category Image</label>
+                        <input asp-for="Image" type="file" class="form-control" accept="image/*" />
+                    </div>
+
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save me-1"></i> Save Category
+                        </button>
+                        <a asp-action="Index" class="btn btn-outline-secondary">Cancel</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
+}

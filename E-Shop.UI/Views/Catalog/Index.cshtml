@@ -1,0 +1,214 @@
+@using E_Shop.Application.Dtos
+@using E_Shop.Application.Dtos.ProductDtos
+@model PaginatedResponse<ProductResponse>
+@{
+    ViewData["Title"] = "Shop";
+    var categories = ViewBag.Categories as IEnumerable<CategoryResponse>;
+    var selectedCategoryId = ViewBag.SelectedCategoryId as Guid?;
+    var searchQuery = ViewBag.SearchQuery as string;
+    var currentSort = ViewBag.CurrentSort as string;
+    var currentPage = (int)ViewBag.CurrentPage;
+    var totalPages = (int)ViewBag.TotalPages;
+}
+
+<div class="catalog-page">
+    <!-- Breadcrumb -->
+    <nav aria-label="breadcrumb" class="mb-3">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Index">Home</a></li>
+            <li class="breadcrumb-item active">Shop</li>
+        </ol>
+    </nav>
+
+    <div class="row">
+        <!-- Sidebar Filters -->
+        <div class="col-lg-3 mb-4">
+            <div class="filter-card">
+                <h5 class="filter-title"><i class="fas fa-sliders-h me-2"></i>Filters</h5>
+
+                <!-- Search -->
+                <form asp-action="Index" method="get" class="mb-4">
+                    <input type="hidden" name="categoryId" value="@selectedCategoryId" />
+                    <input type="hidden" name="sort" value="@currentSort" />
+                    <div class="input-group">
+                        <input type="text" name="q" class="form-control" placeholder="Search products..." value="@searchQuery" />
+                        <button class="btn btn-primary" type="submit"><i class="fas fa-search"></i></button>
+                    </div>
+                </form>
+
+                <!-- Categories -->
+                <h6 class="filter-subtitle">Categories</h6>
+                <ul class="category-filter-list">
+                    <li>
+                        <a asp-action="Index" asp-route-q="@searchQuery" asp-route-sort="@currentSort"
+                           class="@(selectedCategoryId == null ? "active" : "")">
+                            <i class="fas fa-th-large me-2"></i> All Categories
+                            <span class="badge bg-secondary float-end">@Model.TotalCount</span>
+                        </a>
+                    </li>
+                    @if (categories != null)
+                    {
+                        @foreach (var cat in categories)
+                        {
+                            <li>
+                                <a asp-action="Index" asp-route-categoryId="@cat.Id"
+                                   asp-route-q="@searchQuery" asp-route-sort="@currentSort"
+                                   class="@(selectedCategoryId == cat.Id ? "active" : "")">
+                                    @if (!string.IsNullOrEmpty(cat.ImageUrl))
+                                    {
+                                        <img src="@cat.ImageUrl" alt="@cat.Name" class="category-thumb me-2" />
+                                    }
+                                    else
+                                    {
+                                        <i class="fas fa-folder me-2"></i>
+                                    }
+                                    @cat.Name
+                                </a>
+                            </li>
+                        }
+                    }
+                </ul>
+            </div>
+        </div>
+
+        <!-- Products Grid -->
+        <div class="col-lg-9">
+            <!-- Toolbar -->
+            <div class="catalog-toolbar">
+                <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+                    <p class="mb-0 text-muted">
+                        Showing <strong>@Model.Items.Count()</strong> of <strong>@Model.TotalCount</strong> products
+                    </p>
+                    <div class="d-flex align-items-center gap-2">
+                        <label class="form-label mb-0 me-1 text-nowrap"><i class="fas fa-sort me-1"></i>Sort:</label>
+                        <select id="sortSelect" class="form-select form-select-sm" style="width: auto;">
+                            <option value="newest" selected="@(currentSort == "newest")">Newest</option>
+                            <option value="price_asc" selected="@(currentSort == "price_asc")">Price: Low to High</option>
+                            <option value="price_desc" selected="@(currentSort == "price_desc")">Price: High to Low</option>
+                            <option value="name_asc" selected="@(currentSort == "name_asc")">Name: A-Z</option>
+                            <option value="name_desc" selected="@(currentSort == "name_desc")">Name: Z-A</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            @if (Model.Items.Any())
+            {
+                <div class="row g-3">
+                    @foreach (var product in Model.Items)
+                    {
+                        <div class="col-md-6 col-lg-4">
+                            <div class="product-card">
+                                <a asp-action="Details" asp-route-id="@product.Id" class="product-card-link">
+                                    <div class="product-image-wrapper">
+                                        @if (product.ImageUrls != null && product.ImageUrls.Any())
+                                        {
+                                            <img src="@product.ImageUrls.First()" alt="@product.Name" class="product-image" />
+                                        }
+                                        else
+                                        {
+                                            <div class="product-image-placeholder">
+                                                <i class="fas fa-image"></i>
+                                            </div>
+                                        }
+                                        @if (product.StockQuantity <= 5 && product.StockQuantity > 0)
+                                        {
+                                            <span class="product-badge badge-warning">Low Stock</span>
+                                        }
+                                        else if (product.StockQuantity == 0)
+                                        {
+                                            <span class="product-badge badge-danger">Out of Stock</span>
+                                        }
+                                    </div>
+                                </a>
+                                <div class="product-info">
+                                    <p class="product-sku">SKU: @product.SKU</p>
+                                    <h6 class="product-name">
+                                        <a asp-action="Details" asp-route-id="@product.Id">@product.Name</a>
+                                    </h6>
+                                    <div class="d-flex justify-content-between align-items-center mt-auto">
+                                        <span class="product-price">$@product.Price.ToString("N2")</span>
+                                        <button class="btn btn-sm btn-add-cart" title="Add to Cart">
+                                            <i class="fas fa-cart-plus"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+
+                <!-- Pagination -->
+                @if (totalPages > 1)
+                {
+                    <nav class="mt-4" aria-label="Product pagination">
+                        <ul class="pagination justify-content-center">
+                            <li class="page-item @(currentPage <= 1 ? "disabled" : "")">
+                                <a class="page-link" asp-action="Index"
+                                   asp-route-categoryId="@selectedCategoryId"
+                                   asp-route-q="@searchQuery"
+                                   asp-route-sort="@currentSort"
+                                   asp-route-page="@(currentPage - 1)">
+                                    <i class="fas fa-chevron-left"></i>
+                                </a>
+                            </li>
+                            @for (int i = 1; i <= totalPages; i++)
+                            {
+                                <li class="page-item @(i == currentPage ? "active" : "")">
+                                    <a class="page-link" asp-action="Index"
+                                       asp-route-categoryId="@selectedCategoryId"
+                                       asp-route-q="@searchQuery"
+                                       asp-route-sort="@currentSort"
+                                       asp-route-page="@i">@i</a>
+                                </li>
+                            }
+                            <li class="page-item @(currentPage >= totalPages ? "disabled" : "")">
+                                <a class="page-link" asp-action="Index"
+                                   asp-route-categoryId="@selectedCategoryId"
+                                   asp-route-q="@searchQuery"
+                                   asp-route-sort="@currentSort"
+                                   asp-route-page="@(currentPage + 1)">
+                                    <i class="fas fa-chevron-right"></i>
+                                </a>
+                            </li>
+                        </ul>
+                    </nav>
+                }
+            }
+            else
+            {
+                <div class="empty-state">
+                    <i class="fas fa-box-open"></i>
+                    <h4>No products found</h4>
+                    <p class="text-muted">Try adjusting your filters or search terms</p>
+                    <a asp-action="Index" class="btn btn-primary">
+                        <i class="fas fa-redo me-1"></i> Clear Filters
+                    </a>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        document.getElementById('sortSelect').addEventListener('change', function () {
+            const url = new URL(window.location.href);
+            url.searchParams.set('sort', this.value);
+            url.searchParams.set('page', '1');
+            window.location.href = url.toString();
+        });
+
+        // Set the correct option as selected
+        (function () {
+            var select = document.getElementById('sortSelect');
+            var current = '@currentSort';
+            for (var i = 0; i < select.options.length; i++) {
+                if (select.options[i].value === current) {
+                    select.selectedIndex = i;
+                    break;
+                }
+            }
+        })();
+    </script>
+}

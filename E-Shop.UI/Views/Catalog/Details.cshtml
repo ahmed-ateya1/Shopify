@@ -1,0 +1,186 @@
+@using E_Shop.Application.Dtos.ProductDtos
+@model ProductResponse
+@{
+    ViewData["Title"] = Model.Name;
+    var relatedProducts = ViewBag.RelatedProducts as IEnumerable<ProductResponse>;
+}
+
+<div class="product-details-page">
+    <!-- Breadcrumb -->
+    <nav aria-label="breadcrumb" class="mb-4">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Index">Home</a></li>
+            <li class="breadcrumb-item"><a asp-controller="Catalog" asp-action="Index">Shop</a></li>
+            <li class="breadcrumb-item active">@Model.Name</li>
+        </ol>
+    </nav>
+
+    <div class="row g-4">
+        <!-- Product Images -->
+        <div class="col-lg-6">
+            <div class="detail-image-card">
+                @if (Model.ImageUrls != null && Model.ImageUrls.Any())
+                {
+                    <div class="main-image-wrapper">
+                        <img id="mainImage" src="@Model.ImageUrls.First()" alt="@Model.Name" class="main-product-image" />
+                    </div>
+                    @if (Model.ImageUrls.Count() > 1)
+                    {
+                        <div class="image-thumbnails mt-3">
+                            @foreach (var img in Model.ImageUrls)
+                            {
+                                <div class="thumb-item" onclick="document.getElementById('mainImage').src='@img'">
+                                    <img src="@img" alt="@Model.Name" />
+                                </div>
+                            }
+                        </div>
+                    }
+                }
+                else
+                {
+                    <div class="main-image-wrapper">
+                        <div class="product-image-placeholder large">
+                            <i class="fas fa-image"></i>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+
+        <!-- Product Info -->
+        <div class="col-lg-6">
+            <div class="detail-info-card">
+                <span class="detail-sku">SKU: @Model.SKU</span>
+                <h2 class="detail-name">@Model.Name</h2>
+
+                <div class="detail-price-section">
+                    <span class="detail-price">$@Model.Price.ToString("N2")</span>
+                </div>
+
+                <!-- Stock Status -->
+                <div class="detail-stock mb-3">
+                    @if (Model.StockQuantity > 10)
+                    {
+                        <span class="stock-badge in-stock">
+                            <i class="fas fa-check-circle me-1"></i> In Stock (@Model.StockQuantity available)
+                        </span>
+                    }
+                    else if (Model.StockQuantity > 0)
+                    {
+                        <span class="stock-badge low-stock">
+                            <i class="fas fa-exclamation-triangle me-1"></i> Low Stock (Only @Model.StockQuantity left)
+                        </span>
+                    }
+                    else
+                    {
+                        <span class="stock-badge out-of-stock">
+                            <i class="fas fa-times-circle me-1"></i> Out of Stock
+                        </span>
+                    }
+                </div>
+
+                <hr />
+
+                <!-- Add to Cart -->
+                <div class="detail-actions">
+                    <div class="d-flex align-items-center gap-3 mb-3">
+                        <div class="qty-selector">
+                            <button class="btn btn-outline-secondary btn-sm" onclick="changeQty(-1)">
+                                <i class="fas fa-minus"></i>
+                            </button>
+                            <input type="number" id="qtyInput" value="1" min="1" max="@Model.StockQuantity" class="form-control form-control-sm" />
+                            <button class="btn btn-outline-secondary btn-sm" onclick="changeQty(1)">
+                                <i class="fas fa-plus"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="d-flex gap-2">
+                        <button class="btn btn-primary btn-lg flex-grow-1" @(Model.StockQuantity == 0 ? "disabled" : "")>
+                            <i class="fas fa-cart-plus me-2"></i> Add to Cart
+                        </button>
+                        <button class="btn btn-outline-secondary btn-lg" title="Add to Wishlist">
+                            <i class="far fa-heart"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <hr />
+
+                <!-- Info Badges -->
+                <div class="detail-features">
+                    <div class="feature-item">
+                        <i class="fas fa-shipping-fast"></i>
+                        <div>
+                            <strong>Free Delivery</strong>
+                            <p>On orders over $50</p>
+                        </div>
+                    </div>
+                    <div class="feature-item">
+                        <i class="fas fa-undo-alt"></i>
+                        <div>
+                            <strong>Easy Returns</strong>
+                            <p>30 day return policy</p>
+                        </div>
+                    </div>
+                    <div class="feature-item">
+                        <i class="fas fa-shield-alt"></i>
+                        <div>
+                            <strong>Secure Payment</strong>
+                            <p>SSL Encrypted</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Related Products -->
+    @if (relatedProducts != null && relatedProducts.Any())
+    {
+        <div class="related-products mt-5">
+            <h4 class="section-title"><i class="fas fa-th-large me-2"></i> Related Products</h4>
+            <div class="row g-3">
+                @foreach (var rp in relatedProducts)
+                {
+                    <div class="col-md-6 col-lg-3">
+                        <div class="product-card">
+                            <a asp-action="Details" asp-route-id="@rp.Id" class="product-card-link">
+                                <div class="product-image-wrapper">
+                                    @if (rp.ImageUrls != null && rp.ImageUrls.Any())
+                                    {
+                                        <img src="@rp.ImageUrls.First()" alt="@rp.Name" class="product-image" />
+                                    }
+                                    else
+                                    {
+                                        <div class="product-image-placeholder">
+                                            <i class="fas fa-image"></i>
+                                        </div>
+                                    }
+                                </div>
+                            </a>
+                            <div class="product-info">
+                                <h6 class="product-name">
+                                    <a asp-action="Details" asp-route-id="@rp.Id">@rp.Name</a>
+                                </h6>
+                                <span class="product-price">$@rp.Price.ToString("N2")</span>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    }
+</div>
+
+@section Scripts {
+    <script>
+        function changeQty(delta) {
+            var input = document.getElementById('qtyInput');
+            var val = parseInt(input.value) + delta;
+            var max = parseInt(input.getAttribute('max'));
+            if (val >= 1 && val <= max) {
+                input.value = val;
+            }
+        }
+    </script>
+}

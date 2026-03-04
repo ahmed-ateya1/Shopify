@@ -1,0 +1,155 @@
+@using E_Shop.Application.Dtos.OrderDtos
+@using E_Shop.Domain.Enums
+@model OrderResponse
+@{
+    ViewData["Title"] = "Order Details";
+    var statusClass = Model.Status.ToString().ToLower() switch
+    {
+        "pending" => "pending",
+        "prosessing" => "processing",
+        "shipped" => "shipped",
+        "completed" => "completed",
+        _ => "pending"
+    };
+}
+
+<div class="admin-page-header">
+    <h1 class="admin-page-title">
+        <i class="fas fa-receipt me-2"></i>Order #@Model.Id.ToString().Substring(0, 8).ToUpper()
+    </h1>
+    <a asp-action="Index" class="btn btn-outline-secondary">
+        <i class="fas fa-arrow-left me-1"></i> Back to Orders
+    </a>
+</div>
+
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        <i class="fas fa-check-circle me-1"></i> @TempData["SuccessMessage"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+}
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        <i class="fas fa-exclamation-circle me-1"></i> @TempData["ErrorMessage"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+}
+
+<div class="row g-3">
+    <div class="col-lg-8">
+        <div class="admin-card mb-3">
+            <div class="admin-card-header">
+                <h6 class="fw-bold mb-0"><i class="fas fa-box me-2"></i>Order Items</h6>
+                <span class="status-badge @statusClass">@Model.Status</span>
+            </div>
+            <div class="admin-card-body p-0">
+                <div class="table-responsive">
+                    <table class="admin-table">
+                        <thead>
+                            <tr>
+                                <th>Product</th>
+                                <th>Unit Price</th>
+                                <th>Quantity</th>
+                                <th>Total</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model.Items)
+                            {
+                                <tr>
+                                    <td>
+                                        <div class="d-flex align-items-center gap-2">
+                                            @if (!string.IsNullOrEmpty(item.ProductImageUrl))
+                                            {
+                                                <img src="@item.ProductImageUrl" alt="@item.ProductName" class="thumb-img" />
+                                            }
+                                            else
+                                            {
+                                                <div class="thumb-placeholder"><i class="fas fa-image"></i></div>
+                                            }
+                                            <span class="fw-semibold">@item.ProductName</span>
+                                        </div>
+                                    </td>
+                                    <td>$@item.UnitPrice.ToString("N2")</td>
+                                    <td>@item.Quantity</td>
+                                    <td class="fw-semibold">$@item.LineTotal.ToString("N2")</td>
+                                </tr>
+                            }
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <td colspan="3" class="text-end fw-bold">Grand Total:</td>
+                                <td class="fw-bold text-primary fs-5">$@Model.TotalAmount.ToString("N2")</td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sidebar -->
+    <div class="col-lg-4">
+        <!-- Customer Info -->
+        <div class="admin-card mb-3">
+            <div class="admin-card-header">
+                <h6 class="fw-bold mb-0"><i class="fas fa-user me-2"></i>Customer</h6>
+            </div>
+            <div class="admin-card-body">
+                <p class="mb-1"><strong>@Model.UserName</strong></p>
+                <p class="mb-1 text-muted small">@Model.UserEmail</p>
+                <hr />
+                <p class="mb-1 fw-semibold small text-uppercase text-muted">Shipping Address</p>
+                <p class="mb-0">@Model.ShippingAddress</p>
+            </div>
+        </div>
+
+        <!-- Order Info -->
+        <div class="admin-card mb-3">
+            <div class="admin-card-header">
+                <h6 class="fw-bold mb-0"><i class="fas fa-info-circle me-2"></i>Order Info</h6>
+            </div>
+            <div class="admin-card-body">
+                <div class="d-flex justify-content-between mb-2">
+                    <span class="text-muted">Order Date:</span>
+                    <span class="fw-semibold">@Model.OrderDate.ToString("MMM dd, yyyy")</span>
+                </div>
+                <div class="d-flex justify-content-between mb-2">
+                    <span class="text-muted">Status:</span>
+                    <span class="status-badge @statusClass">@Model.Status</span>
+                </div>
+                <div class="d-flex justify-content-between">
+                    <span class="text-muted">Total:</span>
+                    <span class="fw-bold">$@Model.TotalAmount.ToString("N2")</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="admin-card">
+            <div class="admin-card-header">
+                <h6 class="fw-bold mb-0"><i class="fas fa-sync-alt me-2"></i>Update Status</h6>
+            </div>
+            <div class="admin-card-body">
+                <form asp-action="UpdateStatus" method="post">
+                    <input type="hidden" name="orderId" value="@Model.Id" />
+                    <div class="mb-3">
+                        <select name="newStatus" class="form-select">
+                            @foreach (var s in Enum.GetValues<OrderStatus>())
+                            {
+                                <option value="@s" selected="@(Model.Status == s)">@s</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-primary"
+                                onclick="return confirm('Are you sure you want to update the status?');">
+                            <i class="fas fa-check me-1"></i> Update Status
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,8 +1,205 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
+﻿@using E_Shop.Application.Dtos
+@using E_Shop.Application.Dtos.ProductDtos
+@{
+    ViewData["Title"] = "Home";
+    var featuredProducts = ViewBag.FeaturedProducts as IEnumerable<ProductResponse>;
+    var categories = ViewBag.Categories as IEnumerable<CategoryResponse>;
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div>
+<!-- Hero Section -->
+<section class="hero-section">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-6">
+                <span class="hero-badge"><i class="fas fa-fire me-1"></i> Hot Deals This Season</span>
+                <h1 class="hero-title">Discover Amazing Products at Unbeatable Prices</h1>
+                <p class="hero-subtitle">Explore our curated collection of quality products. From everyday essentials to premium picks — all in one place.</p>
+                <div class="d-flex gap-3 mt-4">
+                    <a asp-controller="Catalog" asp-action="Index" class="btn btn-primary btn-lg hero-btn">
+                        <i class="fas fa-shopping-bag me-2"></i> Shop Now
+                    </a>
+                    <a asp-controller="Catalog" asp-action="Index" asp-route-sort="newest" class="btn btn-outline-light btn-lg hero-btn-outline">
+                        New Arrivals <i class="fas fa-arrow-right ms-2"></i>
+                    </a>
+                </div>
+                <div class="hero-stats mt-4">
+                    <div class="hero-stat">
+                        <h4>500+</h4>
+                        <p>Products</p>
+                    </div>
+                    <div class="hero-stat">
+                        <h4>10K+</h4>
+                        <p>Happy Customers</p>
+                    </div>
+                    <div class="hero-stat">
+                        <h4>24/7</h4>
+                        <p>Support</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6 text-center d-none d-lg-block">
+                <div class="hero-illustration">
+                    <i class="fas fa-store"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Features Bar -->
+<section class="features-bar">
+    <div class="container">
+        <div class="row g-3">
+            <div class="col-md-3">
+                <div class="feature-card">
+                    <i class="fas fa-shipping-fast"></i>
+                    <div>
+                        <h6>Free Shipping</h6>
+                        <p>On orders over $50</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="feature-card">
+                    <i class="fas fa-shield-alt"></i>
+                    <div>
+                        <h6>Secure Payment</h6>
+                        <p>100% protected</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="feature-card">
+                    <i class="fas fa-undo-alt"></i>
+                    <div>
+                        <h6>Easy Returns</h6>
+                        <p>30-day guarantee</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="feature-card">
+                    <i class="fas fa-headset"></i>
+                    <div>
+                        <h6>24/7 Support</h6>
+                        <p>Here to help always</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Categories Section -->
+@if (categories != null && categories.Any())
+{
+    <section class="section-padding">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title"><i class="fas fa-th-large me-2"></i>Shop by Category</h2>
+                <a asp-controller="Catalog" asp-action="Index" class="section-link">
+                    View All <i class="fas fa-arrow-right ms-1"></i>
+                </a>
+            </div>
+            <div class="row g-3">
+                @foreach (var cat in categories)
+                {
+                    <div class="col-6 col-md-4 col-lg-3">
+                        <a asp-controller="Catalog" asp-action="Index" asp-route-categoryId="@cat.Id" class="category-card-link">
+                            <div class="home-category-card">
+                                @if (!string.IsNullOrEmpty(cat.ImageUrl))
+                                {
+                                    <img src="@cat.ImageUrl" alt="@cat.Name" class="category-card-img" />
+                                }
+                                else
+                                {
+                                    <div class="category-card-placeholder">
+                                        <i class="fas fa-folder-open"></i>
+                                    </div>
+                                }
+                                <h6 class="category-card-name">@cat.Name</h6>
+                            </div>
+                        </a>
+                    </div>
+                }
+            </div>
+        </div>
+    </section>
+}
+
+<!-- Featured Products -->
+@if (featuredProducts != null && featuredProducts.Any())
+{
+    <section class="section-padding bg-light-subtle">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title"><i class="fas fa-star me-2"></i>Featured Products</h2>
+                <a asp-controller="Catalog" asp-action="Index" class="section-link">
+                    View All <i class="fas fa-arrow-right ms-1"></i>
+                </a>
+            </div>
+            <div class="row g-3">
+                @foreach (var product in featuredProducts)
+                {
+                    <div class="col-6 col-md-4 col-lg-3">
+                        <div class="product-card">
+                            <a asp-controller="Catalog" asp-action="Details" asp-route-id="@product.Id" class="product-card-link">
+                                <div class="product-image-wrapper">
+                                    @if (product.ImageUrls != null && product.ImageUrls.Any())
+                                    {
+                                        <img src="@product.ImageUrls.First()" alt="@product.Name" class="product-image" />
+                                    }
+                                    else
+                                    {
+                                        <div class="product-image-placeholder">
+                                            <i class="fas fa-image"></i>
+                                        </div>
+                                    }
+                                    @if (product.StockQuantity <= 5 && product.StockQuantity > 0)
+                                    {
+                                        <span class="product-badge badge-warning">Low Stock</span>
+                                    }
+                                    else if (product.StockQuantity == 0)
+                                    {
+                                        <span class="product-badge badge-danger">Out of Stock</span>
+                                    }
+                                </div>
+                            </a>
+                            <div class="product-info">
+                                <p class="product-sku">SKU: @product.SKU</p>
+                                <h6 class="product-name">
+                                    <a asp-controller="Catalog" asp-action="Details" asp-route-id="@product.Id">@product.Name</a>
+                                </h6>
+                                <div class="d-flex justify-content-between align-items-center mt-auto">
+                                    <span class="product-price">$@product.Price.ToString("N2")</span>
+                                    <button class="btn btn-sm btn-add-cart" title="Add to Cart">
+                                        <i class="fas fa-cart-plus"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </section>
+}
+
+<!-- CTA Banner -->
+<section class="cta-section">
+    <div class="container text-center">
+        <h2 class="cta-title">Ready to Start Shopping?</h2>
+        <p class="cta-subtitle">Join thousands of happy customers and enjoy the best deals online.</p>
+        <div class="d-flex gap-3 justify-content-center mt-4">
+            <a asp-controller="Catalog" asp-action="Index" class="btn btn-light btn-lg">
+                <i class="fas fa-shopping-bag me-2"></i> Browse Products
+            </a>
+            @if (User.Identity == null || !User.Identity.IsAuthenticated)
+            {
+                <a asp-controller="Account" asp-action="Register" class="btn btn-outline-light btn-lg">
+                    <i class="fas fa-user-plus me-2"></i> Create Account
+                </a>
+            }
+        </div>
+    </div>
+</section>

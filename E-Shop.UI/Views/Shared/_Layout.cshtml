@@ -24,9 +24,9 @@
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="collapse navbar-collapse" id="mainNavbar">
-                    <form class="d-flex mx-auto my-2 my-lg-0 navbar-search" role="search">
+                    <form asp-controller="Catalog" asp-action="Index" method="get" class="d-flex mx-auto my-2 my-lg-0 navbar-search">
                         <div class="input-group">
-                            <input type="text" class="form-control" placeholder="Search products..." aria-label="Search products">
+                            <input type="text" name="q" class="form-control" placeholder="Search products..." aria-label="Search products">
                             <button class="btn btn-search" type="submit">
                                 <i class="fas fa-search"></i>
                             </button>
@@ -40,8 +40,8 @@
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Privacy">
-                                <i class="fas fa-th-large me-1"></i> Categories
+                            <a class="nav-link" asp-area="" asp-controller="Catalog" asp-action="Index">
+                                <i class="fas fa-shopping-bag me-1"></i> Shop
                             </a>
                         </li>
                         @if (User.Identity != null && User.Identity.IsAuthenticated)
@@ -53,6 +53,15 @@
                                 <ul class="dropdown-menu dropdown-menu-end">
                                     <li><a class="dropdown-item" href="#"><i class="fas fa-box me-2"></i>My Orders</a></li>
                                     <li><a class="dropdown-item" href="#"><i class="fas fa-heart me-2"></i>Wishlist</a></li>
+                                    @if (User.IsInRole("ADMIN"))
+                                    {
+                                        <li><hr class="dropdown-divider"></li>
+                                        <li>
+                                            <a class="dropdown-item" asp-area="Admin" asp-controller="Dashboard" asp-action="Index">
+                                                <i class="fas fa-cog me-2"></i>Admin Panel
+                                            </a>
+                                        </li>
+                                    }
                                     <li><hr class="dropdown-divider"></li>
                                     <li>
                                         <a class="dropdown-item" asp-controller="Account" asp-action="Logout">
@@ -113,9 +122,9 @@
                     <h6 class="footer-heading">Quick Links</h6>
                     <ul class="footer-links">
                         <li><a asp-controller="Home" asp-action="Index">Home</a></li>
-                        <li><a href="#">Products</a></li>
-                        <li><a href="#">Categories</a></li>
-                        <li><a href="#">Deals</a></li>
+                        <li><a asp-controller="Catalog" asp-action="Index">Products</a></li>
+                        <li><a asp-controller="Catalog" asp-action="Index">Categories</a></li>
+                        <li><a asp-controller="Catalog" asp-action="Index" asp-route-sort="newest">New Arrivals</a></li>
                     </ul>
                 </div>
                 <div class="col-lg-2 col-md-4 mb-4 mb-md-0">

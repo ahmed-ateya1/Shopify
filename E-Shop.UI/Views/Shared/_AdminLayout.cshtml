@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - E-Shop Admin</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/admin.css" asp-append-version="true" />
+</head>
+<body class="admin-body">
+    <div class="admin-wrapper">
+        <!-- Sidebar -->
+        <aside class="admin-sidebar" id="adminSidebar">
+            <div class="sidebar-header">
+                <a asp-area="" asp-controller="Home" asp-action="Index" class="sidebar-brand">
+                    <i class="fas fa-store me-2"></i>E-Shop
+                </a>
+                <span class="sidebar-badge">Admin</span>
+            </div>
+            <nav class="sidebar-nav">
+                <ul class="sidebar-menu">
+                    <li class="sidebar-menu-header">Main</li>
+                    <li>
+                        <a asp-area="Admin" asp-controller="Dashboard" asp-action="Index"
+                           class="sidebar-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Dashboard" ? "active" : "")">
+                            <i class="fas fa-tachometer-alt"></i>
+                            <span>Dashboard</span>
+                        </a>
+                    </li>
+                    <li class="sidebar-menu-header">Catalog</li>
+                    <li>
+                        <a asp-area="Admin" asp-controller="Categories" asp-action="Index"
+                           class="sidebar-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Categories" ? "active" : "")">
+                            <i class="fas fa-tags"></i>
+                            <span>Categories</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a asp-area="Admin" asp-controller="Products" asp-action="Index"
+                           class="sidebar-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Products" ? "active" : "")">
+                            <i class="fas fa-box"></i>
+                            <span>Products</span>
+                        </a>
+                    </li>
+                    <li class="sidebar-menu-header">Sales</li>
+                    <li>
+                        <a asp-area="Admin" asp-controller="Orders" asp-action="Index"
+                           class="sidebar-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Orders" ? "active" : "")">
+                            <i class="fas fa-shopping-bag"></i>
+                            <span>Orders</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+            <div class="sidebar-footer">
+                <a asp-area="" asp-controller="Home" asp-action="Index" class="sidebar-link">
+                    <i class="fas fa-arrow-left"></i>
+                    <span>Back to Store</span>
+                </a>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <div class="admin-main">
+            <!-- Top Navbar -->
+            <header class="admin-topbar">
+                <button class="btn btn-link sidebar-toggle" id="sidebarToggle">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <div class="topbar-right">
+                    <div class="dropdown">
+                        <a class="topbar-user dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                            <i class="fas fa-user-circle me-1"></i>
+                            @User.Identity?.Name
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li>
+                                <a class="dropdown-item" asp-area="" asp-controller="Account" asp-action="Logout">
+                                    <i class="fas fa-sign-out-alt me-2"></i>Logout
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Page Content -->
+            <main class="admin-content">
+                @RenderBody()
+            </main>
+        </div>
+    </div>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.getElementById('sidebarToggle').addEventListener('click', function () {
+            document.querySelector('.admin-wrapper').classList.toggle('sidebar-collapsed');
+        });
+    </script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>
