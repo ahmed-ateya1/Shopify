@@ -1,7 +1,7 @@
 ﻿using E_Shop.Application.Dtos.AccountDtos;
 using FluentValidation;
 
-namespace E_Shop.Application.Validators.AccountValidator
+namespace E_Shop.Application.Validators
 {
     public class RegisterDtoValidator : AbstractValidator<RegisterDto>
     {

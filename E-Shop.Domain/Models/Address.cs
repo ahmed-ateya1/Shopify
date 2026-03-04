@@ -4,7 +4,7 @@ namespace E_Shop.Domain.Models
 {
     public class Address
     {
-        public Guid Id { get; set; }
+        public Guid Id { get; set; } = Guid.NewGuid();
         public string Country { get; set; }
         public string City { get; set; }
         public string Street { get; set; }

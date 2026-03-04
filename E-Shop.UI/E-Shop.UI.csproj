@@ -20,4 +20,8 @@
     <ProjectReference Include="..\E-Shop.Infrastructure\E-Shop.Infrastructure.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="wwwroot\Upload\" />
+  </ItemGroup>
+
 </Project>

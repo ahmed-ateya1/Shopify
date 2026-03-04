@@ -1,0 +1,9 @@
+﻿global using E_Shop.Application.Dtos;
+global using E_Shop.Domain.Models;
+global using System.Linq.Expressions;
+global using E_Shop.Application.ServicesContract;
+global using FluentValidation;
+global using E_Shop.Domain.RepositoryContract;
+global using Microsoft.Extensions.Logging;
+global using E_Shop.Application.Validators;
+global using E_Shop.Application.Services;

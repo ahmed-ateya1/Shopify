@@ -5,7 +5,7 @@ namespace E_Shop.Domain.Models
 {
     public class Order
     {
-        public Guid Id { get; set; }
+        public Guid Id { get; set; } = Guid.NewGuid();
         public OrderStatus Status { get; set; } = OrderStatus.Pending;
         public DateTime OrderDate { get; set;  }
         public decimal TotalAmount { get; set; }

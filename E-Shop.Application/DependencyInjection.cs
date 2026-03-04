@@ -1,6 +1,4 @@
-﻿using E_Shop.Application.Validators.AccountValidator;
-using FluentValidation;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 
 namespace E_Shop.Application
 {
@@ -10,6 +8,10 @@ namespace E_Shop.Application
         {
 
             services.AddValidatorsFromAssemblyContaining<LoginDtoValidator>();
+            services.AddScoped<IFileServices,FileService>();
+            services.AddScoped<ICategoryService,CategoryService>();
+            services.AddScoped<IProductImageService,ProductImageService>();
+
             return services;
         }
     }
