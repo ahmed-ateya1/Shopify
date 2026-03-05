@@ -20,6 +20,12 @@ namespace E_Shop.Application
             services.AddScoped<IProductImageService, ProductImageService>();
             services.AddScoped<IProductService, ProductService>();
             services.AddScoped<IOrderService, OrderService>();
+            services.AddScoped<IWishlistService, WishlistService>();
+            services.AddScoped<IMemoryCacheService, MemoryCacheService>();
+            services.AddScoped<IShoppingCartService, ShoppingCartService>();
+
+            services.AddDistributedMemoryCache();
+            services.AddMemoryCache();
 
             return services;
         }

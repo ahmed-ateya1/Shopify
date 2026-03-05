@@ -19,7 +19,6 @@
     <input type="hidden" asp-for="Id" />
 
     <div class="row g-3">
-        <!-- Main Info -->
         <div class="col-lg-8">
             <div class="admin-card mb-3">
                 <div class="admin-card-header">
@@ -28,20 +27,20 @@
                 <div class="admin-card-body">
                     <div class="mb-3">
                         <label asp-for="Name" class="form-label">Product Name <span class="text-danger">*</span></label>
-                        <input asp-for="Name" class="form-control" />
+                        <input asp-for="Name" class="form-control" value="@Model.Name" />
                         <span asp-validation-for="Name" class="text-danger small"></span>
                     </div>
                     <div class="row g-3">
                         <div class="col-md-6">
                             <label asp-for="SKU" class="form-label">SKU <span class="text-danger">*</span></label>
-                            <input asp-for="SKU" class="form-control" />
+                            <input asp-for="SKU" class="form-control" value="@Model.SKU"/>
                             <span asp-validation-for="SKU" class="text-danger small"></span>
                         </div>
                         <div class="col-md-6">
                             <label asp-for="Price" class="form-label">Price <span class="text-danger">*</span></label>
                             <div class="input-group">
                                 <span class="input-group-text">$</span>
-                                <input asp-for="Price" type="number" step="0.01" class="form-control" />
+                                <input asp-for="Price" type="number" step="0.01" class="form-control" value="@Model.Price" />
                             </div>
                             <span asp-validation-for="Price" class="text-danger small"></span>
                         </div>
@@ -49,7 +48,7 @@
                     <div class="row g-3 mt-1">
                         <div class="col-md-6">
                             <label asp-for="StockQuantity" class="form-label">Stock Quantity <span class="text-danger">*</span></label>
-                            <input asp-for="StockQuantity" type="number" class="form-control" />
+                            <input asp-for="StockQuantity" type="number" class="form-control" value="@Model.StockQuantity" />
                             <span asp-validation-for="StockQuantity" class="text-danger small"></span>
                         </div>
                         <div class="col-md-6">

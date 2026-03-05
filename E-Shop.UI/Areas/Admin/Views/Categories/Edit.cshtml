@@ -23,7 +23,7 @@
 
                     <div class="mb-3">
                         <label asp-for="Name" class="form-label">Category Name <span class="text-danger">*</span></label>
-                        <input asp-for="Name" class="form-control" placeholder="Enter category name" />
+                        <input asp-for="Name" class="form-control" placeholder="Enter category name" value="@Model.Name" />
                         <span asp-validation-for="Name" class="text-danger small"></span>
                     </div>
 
