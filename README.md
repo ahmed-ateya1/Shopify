@@ -1,4 +1,4 @@
-# E-Shop - Full-Stack E-Commerce Application
+# E-Shop - MVC E-Commerce Application
 
 A comprehensive ASP.NET Core MVC e-commerce platform with complete product catalog, shopping cart, checkout, order management, wishlist, and admin panel functionality.
 
