@@ -53,6 +53,21 @@ namespace E_Shop.Application.Services
             await _memoryCache.SetAsync(cartKey, cart, cancellationToken);
         }
 
+        public async Task UpdateQuantityAsync(string userId, Guid productId, int quantity, CancellationToken cancellationToken = default)
+        {
+            string cartKey = GetCartKey(userId);
+            var cart = await GetCartAsync(userId, cancellationToken);
+            var item = cart.CartItems.FirstOrDefault(i => i.ProductID == productId);
+            if (item != null)
+            {
+                if (quantity <= 0)
+                    cart.CartItems.Remove(item);
+                else
+                    item.Quantity = quantity;
+                await _memoryCache.SetAsync(cartKey, cart, cancellationToken);
+            }
+        }
+
         public async Task RemoveFromCartAsync(string userId, Guid productId, CancellationToken cancellationToken = default)
         {
             string cartKey = GetCartKey(userId);

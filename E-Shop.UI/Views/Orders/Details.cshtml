@@ -1,0 +1,139 @@
+@using E_Shop.Application.Dtos.OrderDtos
+@using E_Shop.Domain.Enums
+@model OrderResponse
+@{
+    ViewData["Title"] = "Order Details";
+    var badgeClass = Model.Status switch
+    {
+        OrderStatus.Pending => "bg-warning text-dark",
+        OrderStatus.Prosessing => "bg-info text-dark",
+        OrderStatus.Shipped => "bg-primary",
+        OrderStatus.Completed => "bg-success",
+        _ => "bg-secondary"
+    };
+
+    var steps = new[] { OrderStatus.Pending, OrderStatus.Prosessing, OrderStatus.Shipped, OrderStatus.Completed };
+    var currentStepIndex = Array.IndexOf(steps, Model.Status);
+}
+
+<div class="order-details-page">
+    <nav aria-label="breadcrumb" class="mb-3">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Index">Home</a></li>
+            <li class="breadcrumb-item"><a asp-controller="Orders" asp-action="Index">My Orders</a></li>
+            <li class="breadcrumb-item active">Order #@Model.Id.ToString()[..8].ToUpper()</li>
+        </ol>
+    </nav>
+
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <i class="fas fa-check-circle me-2"></i>@TempData["SuccessMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    <div class="row g-4">
+        <!-- Main Content -->
+        <div class="col-lg-8">
+            <!-- Order Header -->
+            <div class="checkout-card mb-4">
+                <div class="d-flex justify-content-between align-items-start flex-wrap gap-2">
+                    <div>
+                        <h4 class="mb-1">Order #@Model.Id.ToString()[..8].ToUpper()</h4>
+                        <p class="text-muted mb-0">
+                            <i class="far fa-calendar-alt me-1"></i>Placed on @Model.OrderDate.ToString("MMMM dd, yyyy 'at' hh:mm tt")
+                        </p>
+                    </div>
+                    <span class="badge @badgeClass fs-6">@Model.Status</span>
+                </div>
+            </div>
+
+            <!-- Order Tracking -->
+            <div class="checkout-card mb-4">
+                <h5 class="checkout-card-title"><i class="fas fa-truck me-2"></i>Order Tracking</h5>
+                <div class="tracking-steps">
+                    @for (int i = 0; i < steps.Length; i++)
+                    {
+                        var stepClass = i <= currentStepIndex ? "step-completed" : "";
+                        var iconClass = i <= currentStepIndex ? "fas fa-check-circle text-success" : "far fa-circle text-muted";
+                        <div class="tracking-step @stepClass">
+                            <i class="@iconClass"></i>
+                            <span>@steps[i]</span>
+                        </div>
+                        @if (i < steps.Length - 1)
+                        {
+                            <div class="tracking-line @(i < currentStepIndex ? "line-completed" : "")"></div>
+                        }
+                    }
+                </div>
+            </div>
+
+            <!-- Order Items -->
+            <div class="checkout-card">
+                <h5 class="checkout-card-title"><i class="fas fa-box me-2"></i>Order Items</h5>
+                @foreach (var item in Model.Items)
+                {
+                    <div class="checkout-item">
+                        <div class="d-flex align-items-center gap-3">
+                            @if (!string.IsNullOrEmpty(item.ProductImageUrl))
+                            {
+                                <img src="@item.ProductImageUrl" alt="@item.ProductName" class="checkout-item-img" />
+                            }
+                            else
+                            {
+                                <div class="checkout-item-img-placeholder">
+                                    <i class="fas fa-image"></i>
+                                </div>
+                            }
+                            <div>
+                                <h6 class="mb-0">@item.ProductName</h6>
+                                <small class="text-muted">Qty: @item.Quantity &times; $@item.UnitPrice.ToString("N2")</small>
+                            </div>
+                        </div>
+                        <strong>$@item.LineTotal.ToString("N2")</strong>
+                    </div>
+                }
+            </div>
+        </div>
+
+        <!-- Sidebar -->
+        <div class="col-lg-4">
+            <!-- Payment Summary -->
+            <div class="summary-card mb-4">
+                <h5 class="summary-title">Payment Summary</h5>
+                <div class="summary-row">
+                    <span>Subtotal</span>
+                    <span>$@Model.TotalAmount.ToString("N2")</span>
+                </div>
+                <div class="summary-row">
+                    <span>Shipping</span>
+                    <span class="text-success">Free</span>
+                </div>
+                <hr />
+                <div class="summary-row summary-total">
+                    <span>Total</span>
+                    <span>$@Model.TotalAmount.ToString("N2")</span>
+                </div>
+            </div>
+
+            <!-- Shipping Info -->
+            <div class="summary-card mb-4">
+                <h5 class="summary-title">Shipping Address</h5>
+                <p class="mb-0">
+                    <i class="fas fa-map-marker-alt me-2 text-muted"></i>@Model.ShippingAddress
+                </p>
+            </div>
+
+            <!-- Actions -->
+            <div class="d-grid gap-2">
+                <a asp-controller="Orders" asp-action="Index" class="btn btn-outline-primary">
+                    <i class="fas fa-arrow-left me-2"></i>Back to My Orders
+                </a>
+                <a asp-controller="Catalog" asp-action="Index" class="btn btn-primary">
+                    <i class="fas fa-shopping-bag me-2"></i>Continue Shopping
+                </a>
+            </div>
+        </div>
+    </div>
+</div>

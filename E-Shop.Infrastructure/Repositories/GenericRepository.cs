@@ -91,7 +91,6 @@ namespace E_Shop.Infrastructure.Repositories
                 }
             }
 
-            // Apply Sorting
             if (!string.IsNullOrEmpty(sortBy))
             {
                 var parameter = Expression.Parameter(typeof(T), "x");
@@ -106,7 +105,6 @@ namespace E_Shop.Infrastructure.Repositories
                 query = (IQueryable<T>)method.Invoke(null, new object[] { query, lambda });
             }
 
-            // Apply Pagination
             if (pageIndex != null && pageSize != null)
             {
                 query = query.Skip((pageIndex.Value - 1) * pageSize.Value).Take(pageSize.Value);

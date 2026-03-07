@@ -83,25 +83,31 @@
 
                 <!-- Add to Cart -->
                 <div class="detail-actions">
-                    <div class="d-flex align-items-center gap-3 mb-3">
-                        <div class="qty-selector">
-                            <button class="btn btn-outline-secondary btn-sm" onclick="changeQty(-1)">
-                                <i class="fas fa-minus"></i>
-                            </button>
-                            <input type="number" id="qtyInput" value="1" min="1" max="@Model.StockQuantity" class="form-control form-control-sm" />
-                            <button class="btn btn-outline-secondary btn-sm" onclick="changeQty(1)">
-                                <i class="fas fa-plus"></i>
-                            </button>
+                    <form asp-controller="Cart" asp-action="Add" method="post">
+                        <input type="hidden" name="productId" value="@Model.Id" />
+                        <div class="d-flex align-items-center gap-3 mb-3">
+                            <div class="qty-selector">
+                                <button type="button" class="btn btn-outline-secondary btn-sm" onclick="changeQty(-1)">
+                                    <i class="fas fa-minus"></i>
+                                </button>
+                                <input type="number" id="qtyInput" name="quantity" value="1" min="1" max="@Model.StockQuantity" class="form-control form-control-sm" />
+                                <button type="button" class="btn btn-outline-secondary btn-sm" onclick="changeQty(1)">
+                                    <i class="fas fa-plus"></i>
+                                </button>
+                            </div>
                         </div>
-                    </div>
-                    <div class="d-flex gap-2">
-                        <button class="btn btn-primary btn-lg flex-grow-1" @(Model.StockQuantity == 0 ? "disabled" : "")>
-                            <i class="fas fa-cart-plus me-2"></i> Add to Cart
-                        </button>
-                        <button class="btn btn-outline-secondary btn-lg" title="Add to Wishlist">
+                        <div class="d-flex gap-2">
+                            <button type="submit" class="btn btn-primary btn-lg flex-grow-1" @(Model.StockQuantity == 0 ? "disabled" : "")>
+                                <i class="fas fa-cart-plus me-2"></i> Add to Cart
+                            </button>
+                    </form>
+                    <form asp-controller="Wishlist" asp-action="Add" method="post" class="d-inline">
+                        <input type="hidden" name="productId" value="@Model.Id" />
+                        <button type="submit" class="btn btn-outline-danger btn-lg" title="Add to Wishlist">
                             <i class="far fa-heart"></i>
                         </button>
-                    </div>
+                    </form>
+                        </div>
                 </div>
 
                 <hr />

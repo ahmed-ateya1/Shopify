@@ -121,6 +121,14 @@
                                         }
                                     </div>
                                 </a>
+                                <!-- Wishlist button -->
+                                <form asp-controller="Wishlist" asp-action="Add" method="post" class="wishlist-overlay-form">
+                                    <input type="hidden" name="productId" value="@product.Id" />
+                                    <input type="hidden" name="returnUrl" value="@Context.Request.Path@Context.Request.QueryString" />
+                                    <button type="submit" class="btn wishlist-heart-btn" title="Add to Wishlist">
+                                        <i class="far fa-heart"></i>
+                                    </button>
+                                </form>
                                 <div class="product-info">
                                     <p class="product-sku">SKU: @product.SKU</p>
                                     <h6 class="product-name">
@@ -128,9 +136,15 @@
                                     </h6>
                                     <div class="d-flex justify-content-between align-items-center mt-auto">
                                         <span class="product-price">$@product.Price.ToString("N2")</span>
-                                        <button class="btn btn-sm btn-add-cart" title="Add to Cart">
-                                            <i class="fas fa-cart-plus"></i>
-                                        </button>
+                                        @if (product.StockQuantity > 0)
+                                        {
+                                            <form asp-controller="Cart" asp-action="Add" method="post" class="d-inline">
+                                                <input type="hidden" name="productId" value="@product.Id" />
+                                                <button type="submit" class="btn btn-sm btn-add-cart" title="Add to Cart">
+                                                    <i class="fas fa-cart-plus"></i>
+                                                </button>
+                                            </form>
+                                        }
                                     </div>
                                 </div>
                             </div>

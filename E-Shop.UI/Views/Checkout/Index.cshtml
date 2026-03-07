@@ -1,0 +1,180 @@
+@using E_Shop.Domain.Models
+@{
+    ViewData["Title"] = "Checkout";
+    var cart = ViewBag.Cart as Cart;
+    var addresses = ViewBag.Addresses as IEnumerable<Address>;
+    var userName = ViewBag.UserName as string;
+    var userEmail = ViewBag.UserEmail as string;
+    var items = cart?.CartItems ?? new List<CartItems>();
+    var subtotal = items.Sum(i => i.Price * i.Quantity);
+}
+
+<div class="checkout-page">
+    <nav aria-label="breadcrumb" class="mb-3">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Index">Home</a></li>
+            <li class="breadcrumb-item"><a asp-controller="Cart" asp-action="Index">Cart</a></li>
+            <li class="breadcrumb-item active">Checkout</li>
+        </ol>
+    </nav>
+
+    <h2 class="page-heading"><i class="fas fa-lock me-2"></i>Checkout</h2>
+
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="fas fa-exclamation-circle me-2"></i>@TempData["ErrorMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    <form asp-action="PlaceOrder" method="post">
+        <div class="row g-4">
+            <div class="col-lg-8">
+                <div class="checkout-card mb-4">
+                    <h5 class="checkout-card-title"><i class="fas fa-user me-2"></i>Customer Information</h5>
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label">Full Name</label>
+                            <input type="text" class="form-control" value="@userName" disabled />
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Email</label>
+                            <input type="email" class="form-control" value="@userEmail" disabled />
+                        </div>
+                    </div>
+                </div>
+
+                <div class="checkout-card mb-4">
+                    <h5 class="checkout-card-title"><i class="fas fa-map-marker-alt me-2"></i>Shipping Address</h5>
+
+                    @if (addresses != null && addresses.Any())
+                    {
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">Select an existing address</label>
+                            @foreach (var addr in addresses)
+                            {
+                                <div class="form-check address-option">
+                                    <input class="form-check-input" type="radio" name="addressId"
+                                           value="@addr.Id" id="addr_@addr.Id"
+                                           @(addr.IsDefault ? "checked" : "") />
+                                    <label class="form-check-label" for="addr_@addr.Id">
+                                        <strong>@addr.Street</strong>, @addr.City, @addr.Country @addr.ZipCode
+                                        @if (addr.IsDefault)
+                                        {
+                                            <span class="badge bg-primary ms-2">Default</span>
+                                        }
+                                    </label>
+                                </div>
+                            }
+                            <div class="form-check address-option">
+                                <input class="form-check-input" type="radio" name="addressId"
+                                       value="" id="addr_new" />
+                                <label class="form-check-label fw-semibold" for="addr_new">
+                                    <i class="fas fa-plus me-1"></i> Add new address
+                                </label>
+                            </div>
+                        </div>
+                    }
+
+                    <div id="newAddressForm" class="@(addresses != null && addresses.Any() ? "d-none" : "")">
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label class="form-label">Country</label>
+                                <input type="text" name="country" class="form-control" placeholder="Country" />
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">City</label>
+                                <input type="text" name="city" class="form-control" placeholder="City" />
+                            </div>
+                            <div class="col-md-8">
+                                <label class="form-label">Street Address</label>
+                                <input type="text" name="street" class="form-control" placeholder="Street address" />
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label">Zip Code</label>
+                                <input type="text" name="zipCode" class="form-control" placeholder="Zip code" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="checkout-card">
+                    <h5 class="checkout-card-title"><i class="fas fa-box me-2"></i>Order Items</h5>
+                    @foreach (var item in items)
+                    {
+                        <div class="checkout-item">
+                            <div class="d-flex align-items-center gap-3">
+                                @if (!string.IsNullOrEmpty(item.PictureUrl))
+                                {
+                                    <img src="@item.PictureUrl" alt="@item.ProductName" class="checkout-item-img" />
+                                }
+                                else
+                                {
+                                    <div class="checkout-item-img-placeholder">
+                                        <i class="fas fa-image"></i>
+                                    </div>
+                                }
+                                <div>
+                                    <h6 class="mb-0">@item.ProductName</h6>
+                                    <small class="text-muted">Qty: @item.Quantity &times; $@item.Price.ToString("N2")</small>
+                                </div>
+                            </div>
+                            <strong>$@((item.Price * item.Quantity).ToString("N2"))</strong>
+                        </div>
+                    }
+                </div>
+            </div>
+
+            <div class="col-lg-4">
+                <div class="summary-card sticky-summary">
+                    <h5 class="summary-title">Order Summary</h5>
+                    <div class="summary-row">
+                        <span>Subtotal (@items.Sum(i => i.Quantity) items)</span>
+                        <span>$@subtotal.ToString("N2")</span>
+                    </div>
+                    <div class="summary-row">
+                        <span>Shipping</span>
+                        <span class="text-success">Free</span>
+                    </div>
+                    <hr />
+                    <div class="summary-row summary-total">
+                        <span>Total</span>
+                        <span>$@subtotal.ToString("N2")</span>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary w-100 mt-3 btn-checkout">
+                        <i class="fas fa-check me-2"></i>Place Order — $@subtotal.ToString("N2")
+                    </button>
+
+                    <div class="mt-3 text-center">
+                        <small class="text-muted">
+                            <i class="fas fa-shield-alt me-1"></i>Your payment is secure and encrypted
+                        </small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    <script>
+        document.querySelectorAll('input[name="addressId"]').forEach(radio => {
+            radio.addEventListener('change', function () {
+                const newForm = document.getElementById('newAddressForm');
+                if (this.value === '') {
+                    newForm.classList.remove('d-none');
+                } else {
+                    newForm.classList.add('d-none');
+                }
+            });
+        });
+
+        fetch('/Cart/GetCartCount')
+            .then(r => r.json())
+            .then(data => {
+                document.querySelectorAll('.badge-cart').forEach(b => b.textContent = data.count);
+            });
+    </script>
+}

@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - E-Shop</title>
+    <title>@ViewData["Title"] - Shopify</title>
     <script type="importmap"></script>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
@@ -17,7 +17,7 @@
         <nav class="navbar navbar-expand-lg navbar-dark eshop-navbar sticky-top">
             <div class="container-fluid px-4">
                 <a class="navbar-brand fw-bold" asp-area="" asp-controller="Home" asp-action="Index">
-                    <i class="fas fa-store me-2"></i>E-Shop
+                    <i class="fas fa-store me-2"></i>Shopify
                 </a>
                 <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbar"
                         aria-controls="mainNavbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -51,8 +51,8 @@
                                     <i class="fas fa-user-circle me-1"></i> @User.Identity.Name
                                 </a>
                                 <ul class="dropdown-menu dropdown-menu-end">
-                                    <li><a class="dropdown-item" href="#"><i class="fas fa-box me-2"></i>My Orders</a></li>
-                                    <li><a class="dropdown-item" href="#"><i class="fas fa-heart me-2"></i>Wishlist</a></li>
+                                    <li><a class="dropdown-item" asp-controller="Orders" asp-action="Index"><i class="fas fa-box me-2"></i>My Orders</a></li>
+                                    <li><a class="dropdown-item" asp-controller="Wishlist" asp-action="Index"><i class="fas fa-heart me-2"></i>Wishlist</a></li>
                                     @if (User.IsInRole("ADMIN"))
                                     {
                                         <li><hr class="dropdown-divider"></li>
@@ -85,7 +85,7 @@
                             </li>
                         }
                         <li class="nav-item">
-                            <a class="nav-link position-relative cart-icon" href="#">
+                            <a class="nav-link position-relative cart-icon" asp-controller="Cart" asp-action="Index">
                                 <i class="fas fa-shopping-cart"></i>
                                 <span class="badge-cart">0</span>
                             </a>
@@ -166,6 +166,17 @@
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
+    <script>
+        // Update cart badge globally
+        (function () {
+            fetch('/Cart/GetCartCount')
+                .then(function (r) { return r.json(); })
+                .then(function (data) {
+                    document.querySelectorAll('.badge-cart').forEach(function (b) { b.textContent = data.count; });
+                })
+                .catch(function () { });
+        })();
+    </script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

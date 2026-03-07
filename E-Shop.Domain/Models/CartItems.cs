@@ -8,5 +8,6 @@
         public int Quantity { get; set; }
         public string PictureUrl { get; set; }
         public string BrandName { get; set; }
-    }
+        public int StockQuantity { get; set; }
+    }   
 }

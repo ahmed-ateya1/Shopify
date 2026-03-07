@@ -113,5 +113,71 @@ namespace E_Shop.Application.Services
                 throw;
             }
         }
+
+        public async Task<Guid> CreateOrderAsync(Guid userId, Guid shippingAddressId, List<CartItems> cartItems)
+        {
+            if (cartItems == null || !cartItems.Any())
+                throw new InvalidOperationException("Cart is empty.");
+
+            using var transaction = await unitOfWork.BeginTransactionAsync();
+            try
+            {
+                // 1. Validate stock for all items
+                foreach (var item in cartItems)
+                {
+                    var product = await unitOfWork.Repository<Product>()
+                        .GetByAsync(p => p.Id == item.ProductID);
+
+                    if (product == null)
+                        throw new InvalidOperationException($"Product '{item.ProductName}' no longer exists.");
+
+                    if (product.StockQuantity < item.Quantity)
+                        throw new InvalidOperationException($"Insufficient stock for '{product.Name}'. Available: {product.StockQuantity}, Requested: {item.Quantity}.");
+                }
+
+                // 2. Create Order
+                var order = new Order
+                {
+                    Id = Guid.NewGuid(),
+                    UserId = userId,
+                    ShippingAddressId = shippingAddressId,
+                    OrderDate = DateTime.UtcNow,
+                    Status = OrderStatus.Pending,
+                    TotalAmount = cartItems.Sum(i => i.Price * i.Quantity)
+                };
+
+                await unitOfWork.Repository<Order>().CreateAsync(order);
+
+                // 3. Create OrderItems + 4. Decrease stock
+                foreach (var item in cartItems)
+                {
+                    var orderItem = new OrderItem
+                    {
+                        Id = Guid.NewGuid(),
+                        OrderId = order.Id,
+                        ProductId = item.ProductID,
+                        Quantity = item.Quantity,
+                        UnitPrice = item.Price
+                    };
+
+                    await unitOfWork.Repository<OrderItem>().CreateAsync(orderItem);
+
+                    var product = await unitOfWork.Repository<Product>()
+                        .GetByAsync(p => p.Id == item.ProductID);
+
+                    product.StockQuantity -= item.Quantity;
+                    await unitOfWork.Repository<Product>().UpdateAsync(product);
+                }
+
+                await transaction.CommitAsync();
+                return order.Id;
+            }
+            catch (Exception ex)
+            {
+                await transaction.RollbackAsync();
+                logger.LogError(ex, "Checkout transaction failed.");
+                throw;
+            }
+        }
     }
 }

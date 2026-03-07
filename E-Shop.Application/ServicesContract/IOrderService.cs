@@ -13,5 +13,7 @@ namespace E_Shop.Application.ServicesContract
         Task<OrderResponse> GetOrderByIdAsync(Guid id);
 
         Task<bool> UpdateOrderStatusAsync(Guid orderId, OrderStatus newStatus);
+
+        Task<Guid> CreateOrderAsync(Guid userId, Guid shippingAddressId, List<CartItems> cartItems);
     }
 }

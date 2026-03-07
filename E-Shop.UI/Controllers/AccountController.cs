@@ -87,13 +87,13 @@ namespace E_Shop.UI.Controllers
                     await userManager.FindByNameAsync(loginDTO.Email);
                 if (user != null && await userManager.IsInRoleAsync(user, UserOption.ADMIN.ToString()))
                 {
-                    return RedirectToAction("Index", "Admin");
+                    return RedirectToAction("Index", "Dashboard", new { area = "Admin" });
                 }
                 if (!String.IsNullOrEmpty(returnURL) && Url.IsLocalUrl(returnURL))
                 {
                     return LocalRedirect(returnURL);
                 }
-                return RedirectToAction("Index", "Product");
+                return RedirectToAction("Index", "Home");
             }
 
 

@@ -139,28 +139,20 @@ namespace E_Shop.Application.Services
                 throw new DuplicateSKUException($"A product with SKU '{request.SKU}' already exists.");
             }
 
-            if (productSkuExists != null)
+            await ExecuteWithTransactionAsync(async () =>
             {
-                throw new DuplicateSKUException($"A product with SKU '{request.SKU}' already exists.");
-            }
-
-            if(request.Images != null && request.Images.Any())
-            {
-                await ExecuteWithTransactionAsync(async () =>
+                if (request.Images != null && request.Images.Any())
                 {
-                    if (request.Images != null && request.Images.Any())
-                    {
-                        await imageService.DeleteImageAsync(product.Id);
+                    await imageService.DeleteImageAsync(product.Id);
 
-                        await imageService.SaveImagesAsync(
-                            new ProductImageAddRequest(request.Images, product.Id));
-                    }
+                    await imageService.SaveImagesAsync(
+                        new ProductImageAddRequest(request.Images, product.Id));
+                }
 
-                    request.Adapt(product);
+                request.Adapt(product);
 
-                    await unitOfWork.Repository<Product>().UpdateAsync(product);
-                });
-            }
+                await unitOfWork.Repository<Product>().UpdateAsync(product);
+            });
 
             return product.Adapt<ProductResponse>();
         }

@@ -1,0 +1,129 @@
+@using E_Shop.Application.Dtos
+@using E_Shop.Application.Dtos.WishlistDtos
+@model PaginatedResponse<WishlistResponse>
+@{
+    ViewData["Title"] = "My Wishlist";
+    var currentPage = (int)ViewBag.CurrentPage;
+    var totalPages = (int)ViewBag.TotalPages;
+}
+
+<div class="wishlist-page">
+    <nav aria-label="breadcrumb" class="mb-3">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Index">Home</a></li>
+            <li class="breadcrumb-item active">Wishlist</li>
+        </ol>
+    </nav>
+
+    <h2 class="page-heading"><i class="fas fa-heart me-2 text-danger"></i>My Wishlist</h2>
+
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <i class="fas fa-check-circle me-2"></i>@TempData["SuccessMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+    @if (TempData["InfoMessage"] != null)
+    {
+        <div class="alert alert-info alert-dismissible fade show" role="alert">
+            <i class="fas fa-info-circle me-2"></i>@TempData["InfoMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="fas fa-exclamation-circle me-2"></i>@TempData["ErrorMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    @if (Model.Items.Any())
+    {
+        <div class="row g-3">
+            @foreach (var item in Model.Items)
+            {
+                <div class="col-md-6 col-lg-4 col-xl-3">
+                    <div class="product-card wishlist-card">
+                        <a asp-controller="Catalog" asp-action="Details" asp-route-id="@item.ProductId" class="product-card-link">
+                            <div class="product-image-wrapper">
+                                @if (item.ProductImageUrls != null && item.ProductImageUrls.Any())
+                                {
+                                    <img src="@item.ProductImageUrls.First()" alt="@item.ProductName" class="product-image" />
+                                }
+                                else
+                                {
+                                    <div class="product-image-placeholder">
+                                        <i class="fas fa-image"></i>
+                                    </div>
+                                }
+                            </div>
+                        </a>
+
+                        <!-- Remove button overlay -->
+                        <form asp-action="Remove" method="post" class="wishlist-remove-form">
+                            <input type="hidden" name="id" value="@item.Id" />
+                            <button type="submit" class="btn wishlist-remove-btn" title="Remove from Wishlist">
+                                <i class="fas fa-heart"></i>
+                            </button>
+                        </form>
+
+                        <div class="product-info">
+                            <h6 class="product-name">
+                                <a asp-controller="Catalog" asp-action="Details" asp-route-id="@item.ProductId">@item.ProductName</a>
+                            </h6>
+                            <small class="text-muted d-block mb-2">
+                                Added @item.AddedAt.ToString("MMM dd, yyyy")
+                            </small>
+                            <div class="d-flex justify-content-between align-items-center mt-auto">
+                                <span class="product-price">$@item.ProductPrice.ToString("N2")</span>
+                                <form asp-controller="Cart" asp-action="Add" method="post" class="d-inline">
+                                    <input type="hidden" name="productId" value="@item.ProductId" />
+                                    <button type="submit" class="btn btn-sm btn-add-cart" title="Add to Cart">
+                                        <i class="fas fa-cart-plus"></i>
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+
+        @if (totalPages > 1)
+        {
+            <nav class="mt-4" aria-label="Wishlist pagination">
+                <ul class="pagination justify-content-center">
+                    <li class="page-item @(currentPage <= 1 ? "disabled" : "")">
+                        <a class="page-link" asp-action="Index" asp-route-page="@(currentPage - 1)">
+                            <i class="fas fa-chevron-left"></i>
+                        </a>
+                    </li>
+                    @for (int i = 1; i <= totalPages; i++)
+                    {
+                        <li class="page-item @(i == currentPage ? "active" : "")">
+                            <a class="page-link" asp-action="Index" asp-route-page="@i">@i</a>
+                        </li>
+                    }
+                    <li class="page-item @(currentPage >= totalPages ? "disabled" : "")">
+                        <a class="page-link" asp-action="Index" asp-route-page="@(currentPage + 1)">
+                            <i class="fas fa-chevron-right"></i>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        }
+    }
+    else
+    {
+        <div class="empty-state">
+            <i class="far fa-heart"></i>
+            <h4>Your wishlist is empty</h4>
+            <p class="text-muted">Save items you love for later by clicking the heart icon.</p>
+            <a asp-controller="Catalog" asp-action="Index" class="btn btn-primary">
+                <i class="fas fa-shopping-bag me-2"></i>Browse Products
+            </a>
+        </div>
+    }
+</div>

@@ -12,7 +12,14 @@ namespace E_Shop.Application
         {
             // Configure Mapster mappings
             TypeAdapterConfig<Product, ProductResponse>.NewConfig()
+                .Map(dest => dest.SKU, src => src.SKU)
                 .Map(dest => dest.ImageUrls, src => src.Images.Select(i => i.ImageUrl));
+
+            TypeAdapterConfig<ProductAddRequest, Product>.NewConfig()
+                .Ignore(dest => dest.Images);
+
+            TypeAdapterConfig<ProductUpdateRequest, Product>.NewConfig()
+                .Ignore(dest => dest.Images);
 
             services.AddValidatorsFromAssemblyContaining<LoginDtoValidator>();
             services.AddScoped<IFileServices, FileService>();
