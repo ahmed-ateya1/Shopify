@@ -472,39 +472,6 @@ TypeAdapterConfig<ProductUpdateRequest, Product>.NewConfig()
 
 ---
 
-## 🐛 Known Issues & Solutions
-
-### Issue 1: Images Not Appearing After Product Creation
-
-**Cause**: Mapster auto-mapped `IFormFile` collection to `ProductImage` collection, creating garbage records with empty URLs alongside real images from `SaveImagesAsync`.
-
-**Solution**: Added `.Ignore(dest => dest.Images)` to Mapster configs for `ProductAddRequest` and `ProductUpdateRequest` to prevent auto-mapping. Images are now handled exclusively by `ProductImageService`.
-
-### Issue 2: SKU Field Not Saved or Displayed
-
-**Cause**: Mapster 7.4.0 bug where `.NewConfig()` fails to auto-map all-uppercase property names (like `SKU`) to record constructor parameters.
-
-**Solution**: Added explicit mapping `.Map(dest => dest.SKU, src => src.SKU)` in `Product → ProductResponse` config.
-
-### Issue 3: Product Updates Not Saving When No Images Uploaded
-
-**Cause**: In `UpdateProductAsync`, the entire update logic (`request.Adapt(product)` + `UpdateAsync`) was inside `if(request.Images != null && request.Images.Any())`, so properties were never updated if images weren't changed.
-
-**Solution**: Moved update logic outside the images check. Images are now handled conditionally inside the transaction, but product properties always update.
-
-### Issue 4: Build Errors (MSB3027) When App Running
-
-**Cause**: Running application locks DLL files, preventing build from copying updated assemblies.
-
-**Solution**: Stop the application before building, or build individual projects that aren't locked.
-
-### Issue 5: Broken Product Image Showing Alt Text as Duplicate
-
-**Cause**: A product stored two image URLs — one valid and one broken. The thumbnail strip rendered both, so the broken entry displayed its alt text as a visible text block next to the real image.
-
-**Solution**: Added `onerror="this.closest('.thumb-item').style.display='none'"` to thumbnail `<img>` tags. Broken images are now silently hidden. The same `onerror` on the main image falls back to the icon placeholder.
-
----
 
 ## 📚 API Reference
 
@@ -584,23 +551,6 @@ TypeAdapterConfig<ProductUpdateRequest, Product>.NewConfig()
 
 ---
 
-## 🎨 UI/UX Features
-
-- **Responsive Design**: Mobile-first Bootstrap 5 layout
-- **Custom Design System**: CSS variables for consistent theming
-- **Interactive Elements**:
-  - Cart badge with real-time updates
-  - Product image gallery with zoom-on-hover and thumbnail switching
-  - Sticky product image panel on details page
-  - Quantity spinners with focus-glow styling
-  - Status badges (In Stock / Low Stock / Out of Stock)
-  - Progress bars for order tracking
-  - Trust feature strip on product detail pages
-- **Form Validation**: Client-side + server-side validation
-- **Toast Notifications**: TempData success/error messages
-- **Accessibility**: Semantic HTML, ARIA labels, breadcrumb navigation
-
----
 
 ## 🔐 Security Features
 
