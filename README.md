@@ -1,6 +1,6 @@
-# Shopify- MVC E-Commerce Application
+# Shopify — ASP.NET Core MVC E-Commerce Application
 
-A comprehensive ASP.NET Core MVC e-commerce platform with complete product catalog, shopping cart, checkout, order management, wishlist, and admin panel functionality.
+A full-featured e-commerce platform built with ASP.NET Core 10.0 MVC, following clean architecture principles. Includes a public storefront with product catalog, shopping cart, checkout, order tracking, and wishlist — plus a complete admin panel for managing products, categories, and orders.
 
 ## 📋 Table of Contents
 
@@ -51,7 +51,7 @@ E-Shop is a modern, full-featured e-commerce application built with ASP.NET Core
 - **Bootstrap 5** - UI framework
 - **Font Awesome 6.5.1** - Icons
 - **Google Fonts (Inter)** - Typography
-- **Custom CSS Design System** - Brand styling with CSS variables
+- **Custom CSS Design System**: Brand styling with CSS variables (~1865 lines)
 
 ### Patterns & Practices
 
@@ -117,9 +117,14 @@ E-Shop/
 - Search products by name
 - Sort by: Price (asc/desc), Name (asc/desc), Newest
 - Pagination (12 items per page)
-- Product detail page with image gallery
+- Product detail page with enhanced image gallery
+  - Sticky gallery panel while scrolling product info
+  - Zoom-on-hover for main product image
+  - Thumbnail strip with active indicator and broken-image auto-hiding
+  - Fallback placeholder for missing images
+- Trust feature strip (Free Delivery, Easy Returns, Secure Payment)
 - Related products recommendations
-- Stock availability indicator
+- Stock availability indicator (In Stock / Low Stock / Out of Stock)
 
 #### Shopping Cart
 
@@ -282,7 +287,7 @@ E-Shop/
     │   └── Shared/ (_Layout, _AdminLayout)
     ├── wwwroot/
     │   ├── css/
-    │   │   ├── site.css (~1740+ lines)
+    │   │   ├── site.css (~1865+ lines)
     │   │   └── admin.css
     │   ├── js/
     │   ├── lib/ (Bootstrap, Font Awesome)
@@ -420,15 +425,18 @@ E-Shop/
 
 ### Connection String
 
-Located in `E-Shop.UI/appsettings.json`:
+Located in `E-Shop.UI/appsettings.json`. Two profiles are available:
 
 ```json
 {
   "ConnectionStrings": {
-    "EshopConnection": "Server=.;Database=EshopDb;TrustServerCertificate=true;Integrated Security=SSPI;"
+    "EshopConnection": "Server=.;Database=EshopDb;TrustServerCertificate=true;Integrated Security=SSPI;",
+    "EshopDockerConnection": "Server=sqlserverShop,1433;Database=ShopDB;User Id=sa;Password=<your-password>;TrustServerCertificate=True;"
   }
 }
 ```
+
+Switch between them in `E-Shop.Infrastructure/DependencyInjection.cs` by changing which key is read from configuration.
 
 ### Authentication
 
@@ -489,6 +497,12 @@ TypeAdapterConfig<ProductUpdateRequest, Product>.NewConfig()
 **Cause**: Running application locks DLL files, preventing build from copying updated assemblies.
 
 **Solution**: Stop the application before building, or build individual projects that aren't locked.
+
+### Issue 5: Broken Product Image Showing Alt Text as Duplicate
+
+**Cause**: A product stored two image URLs — one valid and one broken. The thumbnail strip rendered both, so the broken entry displayed its alt text as a visible text block next to the real image.
+
+**Solution**: Added `onerror="this.closest('.thumb-item').style.display='none'"` to thumbnail `<img>` tags. Broken images are now silently hidden. The same `onerror` on the main image falls back to the icon placeholder.
 
 ---
 
@@ -576,14 +590,15 @@ TypeAdapterConfig<ProductUpdateRequest, Product>.NewConfig()
 - **Custom Design System**: CSS variables for consistent theming
 - **Interactive Elements**:
   - Cart badge with real-time updates
-  - Product image galleries
-  - Quantity spinners
-  - Status badges
+  - Product image gallery with zoom-on-hover and thumbnail switching
+  - Sticky product image panel on details page
+  - Quantity spinners with focus-glow styling
+  - Status badges (In Stock / Low Stock / Out of Stock)
   - Progress bars for order tracking
+  - Trust feature strip on product detail pages
 - **Form Validation**: Client-side + server-side validation
 - **Toast Notifications**: TempData success/error messages
-- **Loading States**: Visual feedback for async operations
-- **Accessibility**: Semantic HTML, ARIA labels
+- **Accessibility**: Semantic HTML, ARIA labels, breadcrumb navigation
 
 ---
 
@@ -598,20 +613,4 @@ TypeAdapterConfig<ProductUpdateRequest, Product>.NewConfig()
 
 ---
 
-## 🚧 Future Enhancements
-
-- Payment gateway integration (Stripe, PayPal)
-- Product reviews and ratings
-- Email notifications (order confirmations, status updates)
-- Advanced search with Elasticsearch
-- Product recommendations engine
-- Customer profile management
-- Discount codes and promotions
-- Inventory alerts for low stock
-- Multi-language support
-- Dark mode theme
-- Export orders to PDF/Excel
-
----
-
-**Built with  using ASP.NET Core 10.0**
+**Built with ASP.NET Core 10.0**
