@@ -54,7 +54,7 @@ namespace E_Shop.UI.Controllers
                     ModelState.AddModelError(string.Empty, "Failed asign role to user");
                     return View(registerDTO);
                 }
-                return RedirectToAction("Login");
+                return RedirectToAction("Index","Home");
             }
             else
             {

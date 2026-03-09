@@ -1,0 +1,38 @@
+services:
+  e-shop.ui:
+    image: ${DOCKER_REGISTRY-}eshopui
+    build:
+      context: .
+      dockerfile: E-Shop.UI/Dockerfile
+    ports:
+      - "5000:8080"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://+:8080
+      - SQLSERVER_HOST=sqlserverShop
+      - SQLSERVER_PORT=1433
+      - SQLSERVER_USER=sa
+      - SQLSERVER_PASSWORD=AhmedAteya12348@
+      - SQLSERVER_DATABASE=ShopDB
+    networks:
+      - ShopNetwork
+    depends_on:
+     - sqlserverShop
+  sqlserverShop:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: sqlserver_course
+    restart: always
+    environment:
+      - ACCEPT_EULA=Y
+      - SA_PASSWORD=AhmedAteya12348@
+    ports:
+      - "1433:1433"
+    networks:
+      - ShopNetwork
+    volumes:
+      - sqlserverShop_data:/var/opt/mssql
+networks:
+  ShopNetwork:
+    driver: bridge
+volumes:
+  sqlserverShop_data:

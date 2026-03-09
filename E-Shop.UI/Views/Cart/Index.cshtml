@@ -110,7 +110,6 @@
                 </div>
             </div>
 
-            <!-- Order Summary -->
             <div class="col-lg-4">
                 <div class="summary-card">
                     <h5 class="summary-title">Order Summary</h5>
@@ -174,7 +173,6 @@
 
                 input.value = val;
 
-                // Disable/enable increment button based on stock
                 if (val >= stockQuantity) {
                     increaseBtn.setAttribute('disabled', 'disabled');
                 } else {
@@ -197,7 +195,6 @@
             });
         });
 
-        // Update cart badge
         fetch('/Cart/GetCartCount')
             .then(r => r.json())
             .then(data => {

@@ -6,35 +6,32 @@
 }
 
 <div class="product-details-page">
-    <!-- Breadcrumb -->
     <nav aria-label="breadcrumb" class="mb-4">
         <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Index">Home</a></li>
+            <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Index"><i class="fas fa-home me-1"></i>Home</a></li>
             <li class="breadcrumb-item"><a asp-controller="Catalog" asp-action="Index">Shop</a></li>
             <li class="breadcrumb-item active">@Model.Name</li>
         </ol>
     </nav>
 
     <div class="row g-4">
-        <!-- Product Images -->
         <div class="col-lg-6">
-            <div class="detail-image-card">
+            <div class="detail-image-card sticky-top-gallery">
                 @if (Model.ImageUrls != null && Model.ImageUrls.Any())
                 {
                     <div class="main-image-wrapper">
-                        <img id="mainImage" src="@Model.ImageUrls.First()" alt="@Model.Name" class="main-product-image" />
+                        <img id="mainImage" src="@Model.ImageUrls.First()" alt="@Model.Name" class="main-product-image"
+                             onerror="this.src='';this.closest('.main-image-wrapper').innerHTML='<div class=\'product-image-placeholder large\'><i class=\'fas fa-image\'></i></div>'" />
                     </div>
-                    @if (Model.ImageUrls.Count() > 1)
-                    {
-                        <div class="image-thumbnails mt-3">
-                            @foreach (var img in Model.ImageUrls)
-                            {
-                                <div class="thumb-item" onclick="document.getElementById('mainImage').src='@img'">
-                                    <img src="@img" alt="@Model.Name" />
-                                </div>
-                            }
-                        </div>
-                    }
+                    <div class="image-thumbnails mt-3">
+                        @foreach (var img in Model.ImageUrls)
+                        {
+                            <div class="thumb-item" onclick="switchImage(this, '@img')">
+                                <img src="@img" alt="@Model.Name"
+                                     onerror="this.closest('.thumb-item').style.display='none'" />
+                            </div>
+                        }
+                    </div>
                 }
                 else
                 {
@@ -47,17 +44,21 @@
             </div>
         </div>
 
-        <!-- Product Info -->
         <div class="col-lg-6">
             <div class="detail-info-card">
-                <span class="detail-sku">SKU: @Model.SKU</span>
+                <div class="d-flex align-items-center justify-content-between mb-2">
+                    <span class="detail-sku"><i class="fas fa-barcode me-1"></i>SKU: @Model.SKU</span>
+                    @if (Model.IsActive)
+                    {
+                        <span class="badge detail-active-badge">Active</span>
+                    }
+                </div>
                 <h2 class="detail-name">@Model.Name</h2>
 
                 <div class="detail-price-section">
                     <span class="detail-price">$@Model.Price.ToString("N2")</span>
                 </div>
 
-                <!-- Stock Status -->
                 <div class="detail-stock mb-3">
                     @if (Model.StockQuantity > 10)
                     {
@@ -79,10 +80,10 @@
                     }
                 </div>
 
-                <hr />
+                <hr class="detail-divider" />
 
-                <!-- Add to Cart -->
                 <div class="detail-actions">
+                    <label class="form-label fw-semibold mb-2">Quantity</label>
                     <form asp-controller="Cart" asp-action="Add" method="post">
                         <input type="hidden" name="productId" value="@Model.Id" />
                         <div class="d-flex align-items-center gap-3 mb-3">
@@ -96,43 +97,40 @@
                                 </button>
                             </div>
                         </div>
-                        <div class="d-flex gap-2">
-                            <button type="submit" class="btn btn-primary btn-lg flex-grow-1" @(Model.StockQuantity == 0 ? "disabled" : "")>
+                        <div class="d-flex gap-2 mb-4">
+                            <button type="submit" class="btn btn-primary btn-lg flex-grow-1 btn-add-cart" @(Model.StockQuantity == 0 ? "disabled" : "")>
                                 <i class="fas fa-cart-plus me-2"></i> Add to Cart
                             </button>
                     </form>
                     <form asp-controller="Wishlist" asp-action="Add" method="post" class="d-inline">
                         <input type="hidden" name="productId" value="@Model.Id" />
-                        <button type="submit" class="btn btn-outline-danger btn-lg" title="Add to Wishlist">
+                        <button type="submit" class="btn btn-outline-danger btn-lg btn-wishlist" title="Add to Wishlist">
                             <i class="far fa-heart"></i>
                         </button>
                     </form>
                         </div>
                 </div>
 
-                <hr />
-
-                <!-- Info Badges -->
                 <div class="detail-features">
                     <div class="feature-item">
-                        <i class="fas fa-shipping-fast"></i>
+                        <i class="fas fa-truck feature-icon-delivery"></i>
                         <div>
                             <strong>Free Delivery</strong>
                             <p>On orders over $50</p>
                         </div>
                     </div>
                     <div class="feature-item">
-                        <i class="fas fa-undo-alt"></i>
+                        <i class="fas fa-undo-alt feature-icon-return"></i>
                         <div>
                             <strong>Easy Returns</strong>
                             <p>30 day return policy</p>
                         </div>
                     </div>
                     <div class="feature-item">
-                        <i class="fas fa-shield-alt"></i>
+                        <i class="fas fa-shield-alt feature-icon-secure"></i>
                         <div>
                             <strong>Secure Payment</strong>
-                            <p>SSL Encrypted</p>
+                            <p>SSL encrypted checkout</p>
                         </div>
                     </div>
                 </div>
@@ -140,7 +138,6 @@
         </div>
     </div>
 
-    <!-- Related Products -->
     @if (relatedProducts != null && relatedProducts.Any())
     {
         <div class="related-products mt-5">
@@ -188,5 +185,19 @@
                 input.value = val;
             }
         }
+
+        function switchImage(thumbEl, src) {
+            document.getElementById('mainImage').src = src;
+            document.querySelectorAll('.thumb-item').forEach(function (t) {
+                t.classList.remove('active');
+            });
+            thumbEl.classList.add('active');
+        }
+
+        // Mark first visible thumbnail as active on load
+        document.addEventListener('DOMContentLoaded', function () {
+            var firstThumb = document.querySelector('.thumb-item');
+            if (firstThumb) firstThumb.classList.add('active');
+        });
     </script>
 }

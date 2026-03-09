@@ -106,7 +106,7 @@
         <div class="container-fluid px-4">
             <div class="row py-5">
                 <div class="col-lg-4 mb-4 mb-lg-0">
-                    <h5 class="footer-brand"><i class="fas fa-store me-2"></i>E-Shop</h5>
+                    <h5 class="footer-brand"><i class="fas fa-store me-2"></i>Shopify</h5>
                     <p class="text-light-muted mt-3">
                         Your one-stop destination for quality products at amazing prices.
                         Shop with confidence and enjoy fast delivery.
@@ -149,17 +149,7 @@
                     </form>
                 </div>
             </div>
-            <hr class="footer-divider" />
-            <div class="row py-3">
-                <div class="col-md-6">
-                    <p class="mb-0 text-light-muted">&copy; 2026 E-Shop. All rights reserved.</p>
-                </div>
-                <div class="col-md-6 text-md-end">
-                    <img src="https://img.icons8.com/color/38/visa.png" alt="Visa" class="payment-icon" />
-                    <img src="https://img.icons8.com/color/38/mastercard-logo.png" alt="Mastercard" class="payment-icon" />
-                    <img src="https://img.icons8.com/color/38/paypal.png" alt="PayPal" class="payment-icon" />
-                </div>
-            </div>
+            
         </div>
     </footer>
 
@@ -167,7 +157,7 @@
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
     <script>
-        // Update cart badge globally
+        (function () {
         (function () {
             fetch('/Cart/GetCartCount')
                 .then(function (r) { return r.json(); })

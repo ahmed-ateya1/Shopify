@@ -12,7 +12,6 @@
 }
 
 <div class="catalog-page">
-    <!-- Breadcrumb -->
     <nav aria-label="breadcrumb" class="mb-3">
         <ol class="breadcrumb">
             <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Index">Home</a></li>
@@ -21,12 +20,10 @@
     </nav>
 
     <div class="row">
-        <!-- Sidebar Filters -->
         <div class="col-lg-3 mb-4">
             <div class="filter-card">
                 <h5 class="filter-title"><i class="fas fa-sliders-h me-2"></i>Filters</h5>
 
-                <!-- Search -->
                 <form asp-action="Index" method="get" class="mb-4">
                     <input type="hidden" name="categoryId" value="@selectedCategoryId" />
                     <input type="hidden" name="sort" value="@currentSort" />
@@ -36,7 +33,6 @@
                     </div>
                 </form>
 
-                <!-- Categories -->
                 <h6 class="filter-subtitle">Categories</h6>
                 <ul class="category-filter-list">
                     <li>
@@ -71,9 +67,7 @@
             </div>
         </div>
 
-        <!-- Products Grid -->
         <div class="col-lg-9">
-            <!-- Toolbar -->
             <div class="catalog-toolbar">
                 <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
                     <p class="mb-0 text-muted">
@@ -121,7 +115,6 @@
                                         }
                                     </div>
                                 </a>
-                                <!-- Wishlist button -->
                                 <form asp-controller="Wishlist" asp-action="Add" method="post" class="wishlist-overlay-form">
                                     <input type="hidden" name="productId" value="@product.Id" />
                                     <input type="hidden" name="returnUrl" value="@Context.Request.Path@Context.Request.QueryString" />
@@ -152,7 +145,6 @@
                     }
                 </div>
 
-                <!-- Pagination -->
                 @if (totalPages > 1)
                 {
                     <nav class="mt-4" aria-label="Product pagination">
@@ -213,7 +205,6 @@
             window.location.href = url.toString();
         });
 
-        // Set the correct option as selected
         (function () {
             var select = document.getElementById('sortSelect');
             var current = '@currentSort';

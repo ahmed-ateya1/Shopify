@@ -6,7 +6,6 @@
     var categories = ViewBag.Categories as IEnumerable<CategoryResponse>;
 }
 
-<!-- Hero Section -->
 <section class="hero-section">
     <div class="container">
         <div class="row align-items-center">
@@ -22,20 +21,7 @@
                         New Arrivals <i class="fas fa-arrow-right ms-2"></i>
                     </a>
                 </div>
-                <div class="hero-stats mt-4">
-                    <div class="hero-stat">
-                        <h4>500+</h4>
-                        <p>Products</p>
-                    </div>
-                    <div class="hero-stat">
-                        <h4>10K+</h4>
-                        <p>Happy Customers</p>
-                    </div>
-                    <div class="hero-stat">
-                        <h4>24/7</h4>
-                        <p>Support</p>
-                    </div>
-                </div>
+                
             </div>
             <div class="col-lg-6 text-center d-none d-lg-block">
                 <div class="hero-illustration">
@@ -46,51 +32,6 @@
     </div>
 </section>
 
-<!-- Features Bar -->
-<section class="features-bar">
-    <div class="container">
-        <div class="row g-3">
-            <div class="col-md-3">
-                <div class="feature-card">
-                    <i class="fas fa-shipping-fast"></i>
-                    <div>
-                        <h6>Free Shipping</h6>
-                        <p>On orders over $50</p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-3">
-                <div class="feature-card">
-                    <i class="fas fa-shield-alt"></i>
-                    <div>
-                        <h6>Secure Payment</h6>
-                        <p>100% protected</p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-3">
-                <div class="feature-card">
-                    <i class="fas fa-undo-alt"></i>
-                    <div>
-                        <h6>Easy Returns</h6>
-                        <p>30-day guarantee</p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-3">
-                <div class="feature-card">
-                    <i class="fas fa-headset"></i>
-                    <div>
-                        <h6>24/7 Support</h6>
-                        <p>Here to help always</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
-
-<!-- Categories Section -->
 @if (categories != null && categories.Any())
 {
     <section class="section-padding">

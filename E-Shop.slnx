@@ -1,4 +1,7 @@
 <Solution>
+  <Project Path="docker-compose.dcproj">
+    <Build />
+  </Project>
   <Project Path="E-Shop.Application/E-Shop.Application.csproj" />
   <Project Path="E-Shop.Domain/E-Shop.Domain.csproj" />
   <Project Path="E-Shop.Infrastructure/E-Shop.Infrastructure.csproj" />
